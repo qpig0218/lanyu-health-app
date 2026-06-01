@@ -804,6 +804,7 @@ function renderResident() {
         <div class="phone-body">${renderResidentBody()}</div>
         <nav class="bottom-nav">
           ${residentNav("home", "home", "首頁")}
+          ${residentNav("plan", "users", "照護")}
           ${residentNav("survey", "clipboard", "問卷")}
           ${residentNav("schedule", "calendar", "預約")}
           ${residentNav("results", "lab", "結果")}
@@ -832,6 +833,7 @@ function residentNav(tab, iconName, label) {
 }
 
 function renderResidentBody() {
+  if (state.residentTab === "plan") return residentCarePlan();
   if (state.residentTab === "survey") return residentSurvey();
   if (state.residentTab === "schedule") return residentSchedule();
   if (state.residentTab === "results") return residentResults();
@@ -851,11 +853,124 @@ function residentHome() {
       ${residentTask("預約健檢", "6/18 上午還有名額", "可預約", "calendar")}
       ${residentTask("查看結果", "爸爸血糖需追蹤", "需回覆", "lab")}
     </div>
+    ${residentHealthPathPreview()}
+    ${residentFamilyModulePreview()}
   `;
 }
 
 function residentTask(title, desc, meta, iconName) {
   return `<div class="task-card"><div class="task-icon">${icon(iconName)}</div><div><strong>${title}</strong><div class="minor">${desc}</div></div><span class="status-pill">${meta}</span></div>`;
+}
+
+function residentHealthPathPreview() {
+  return `
+    <section class="resident-card care-path-card">
+      <div class="resident-card-head">
+        <div>
+          <h3>個人健康路徑設計</h3>
+          <p>依照家訪、健檢與檢驗結果安排下一步</p>
+        </div>
+        <span class="status-pill yellow">進行中</span>
+      </div>
+      <div class="path-strip">
+        ${residentPathStep("問卷", "已完成", 100, "check")}
+        ${residentPathStep("健檢", "6/18", 72, "calendar")}
+        ${residentPathStep("追蹤", "2 週內", 38, "lab")}
+      </div>
+      <button class="ghost-btn resident-wide-btn" onclick="setResidentTab('plan')">${icon("arrow")}查看完整照護路徑</button>
+    </section>
+  `;
+}
+
+function residentFamilyModulePreview() {
+  return `
+    <section class="resident-card module-preview-card">
+      <div class="resident-card-head">
+        <div>
+          <h3>家庭健康設計模組</h3>
+          <p>夏曼家目前啟用 3 個照護模組</p>
+        </div>
+      </div>
+      <div class="resident-module-list">
+        ${residentModule("H2", "慢病穩定", "血壓血糖、拿藥、飲食一起追蹤", 68)}
+        ${residentModule("H3", "肺健康", "LDCT 條件確認、戒菸支持", 44)}
+        ${residentModule("H8", "到檢協助", "交通、陪同、提醒與船班安排", 82)}
+      </div>
+    </section>
+  `;
+}
+
+function residentCarePlan() {
+  return `
+    <div class="resident-plan">
+      <section class="resident-card care-path-card">
+        <div class="resident-card-head">
+          <div>
+            <h3>個人健康路徑設計</h3>
+            <p>把「要做什麼、什麼時候做、誰協助」整理成一條路徑</p>
+          </div>
+          <span class="status-pill green">已建立</span>
+        </div>
+        <div class="path-timeline">
+          ${residentTimeline("1", "先補完整問卷", "確認家族史、吸菸年數、交通協助", "今天", "done")}
+          ${residentTimeline("2", "完成分齡健檢", "成人健檢、血糖血脂、肝腎功能與癌篩條件", "6/18", "active")}
+          ${residentTimeline("3", "檢驗結果追蹤", "血糖偏高由護理師電話追蹤，必要時安排門診", "2 週內", "")}
+          ${residentTimeline("4", "家庭健康回饋", "一起更新慢病、肺健康、到檢協助模組", "1 個月", "")}
+        </div>
+      </section>
+      <section class="resident-card module-preview-card">
+        <div class="resident-card-head">
+          <div>
+            <h3>家庭健康設計模組</h3>
+            <p>照護團隊會依家庭狀況啟用，不需要家人自己判斷醫療術語</p>
+          </div>
+        </div>
+        <div class="resident-module-list">
+          ${residentModule("H2", "慢病穩定", "血壓血糖、拿藥、飲食一起追蹤", 68)}
+          ${residentModule("H3", "肺健康", "LDCT 條件確認、戒菸支持", 44)}
+          ${residentModule("H8", "到檢協助", "交通、陪同、提醒與船班安排", 82)}
+          ${residentModule("H9", "環境健康溝通", "檢查結果、環境疑慮與風險說明", 25)}
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function residentPathStep(title, meta, percent, iconName) {
+  return `
+    <div class="path-step">
+      <span class="task-icon">${icon(iconName)}</span>
+      <strong>${title}</strong>
+      <small>${meta}</small>
+      <span class="mini-meter"><span style="width:${percent}%"></span></span>
+    </div>
+  `;
+}
+
+function residentTimeline(num, title, desc, time, stateClass) {
+  return `
+    <div class="timeline-item ${stateClass}">
+      <span class="timeline-index">${num}</span>
+      <div>
+        <strong>${title}</strong>
+        <p>${desc}</p>
+      </div>
+      <span class="status-pill">${time}</span>
+    </div>
+  `;
+}
+
+function residentModule(code, title, desc, percent) {
+  return `
+    <button class="resident-module" onclick="showToast('${code} ${title} 已加入家庭健康設計')">
+      <span class="module-code">${code}</span>
+      <span class="module-copy">
+        <strong>${title}</strong>
+        <small>${desc}</small>
+        <span class="mini-meter"><span style="width:${percent}%"></span></span>
+      </span>
+    </button>
+  `;
 }
 
 function residentSurvey() {
