@@ -3460,6 +3460,10 @@ body {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.smart-list {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
 .ai-chip,
 .ai-draft,
 .ai-signal,
@@ -3511,8 +3515,10 @@ body {
 }
 
 .smart-goal {
-  grid-template-columns: minmax(74px, auto) minmax(0, 1fr) auto;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  align-content: start;
+  min-height: 126px;
 }
 
 .smart-goal span {
@@ -3522,10 +3528,16 @@ body {
 }
 
 .smart-goal strong {
+  grid-column: 1 / -1;
+  color: rgba(28, 28, 30, 0.86);
+  font-size: 14px;
   font-weight: 760;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .smart-goal em {
+  justify-self: end;
   min-width: 42px;
   padding: 4px 8px;
   color: #fff;
@@ -3644,10 +3656,11 @@ body {
 
   .smart-goal {
     grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 0;
   }
 
   .smart-goal span {
-    grid-column: 1 / -1;
+    grid-column: auto;
   }
 }
 
