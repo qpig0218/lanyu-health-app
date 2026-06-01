@@ -280,6 +280,89 @@ function selectedPatient() {
   return patients.find((p) => p.id === state.selectedId) || patients[0];
 }
 
+function patientSignalText(patient) {
+  return `${patient.tags.join(" ")} ${patient.householdTags.join(" ")} ${patient.conditions.join(" ")} ${patient.questionnaire.transport} ${patient.questionnaire.alert}`;
+}
+
+function smartPlanFor(patient) {
+  const text = patientSignalText(patient);
+  const plans = [];
+
+  if (text.includes("糖尿病") || text.includes("高血壓") || text.includes("慢病")) {
+    plans.push({
+      domain: "慢病穩定",
+      goal: "晚餐後步行 10 分鐘，每週 5 天；6/18 前完成 5 次並由家人協助打卡。",
+      metric: "5 次",
+    });
+    plans.push({
+      domain: "飲食調整",
+      goal: "一週至少 5 餐把含糖飲料改成白開水，晚餐飯量先減少 1/4。",
+      metric: "5 餐",
+    });
+  }
+
+  if (text.includes("吸菸") || text.includes("LDCT") || text.includes("肺")) {
+    plans.push({
+      domain: "肺健康",
+      goal: "本週記錄每天吸菸支數，選 3 天延後第一支菸 30 分鐘，健檢時完成 LDCT 條件確認。",
+      metric: "3 天",
+    });
+  }
+
+  if (patient.age >= 65 || text.includes("跌倒") || text.includes("高齡")) {
+    plans.push({
+      domain: "高齡安全",
+      goal: "3 天內完成浴室止滑、夜燈與走道雜物檢查，護理師下次家訪確認。",
+      metric: "3 項",
+    });
+  }
+
+  if (text.includes("孕") || text.includes("產檢")) {
+    plans.push({
+      domain: "孕產支持",
+      goal: "本週確認下一次產檢日期、船班備案與緊急聯絡人，完成後傳給護理師。",
+      metric: "1 份",
+    });
+  }
+
+  if (patient.age < 18 || text.includes("兒少") || text.includes("視力") || text.includes("齲齒")) {
+    plans.push({
+      domain: "兒少健康",
+      goal: "兩週內完成視力或牙科預約，家長每天睡前協助刷牙 2 分鐘。",
+      metric: "14 天",
+    });
+  }
+
+  if (!plans.length) {
+    plans.push({
+      domain: "預防保健",
+      goal: "健檢前完成問卷、同意書與交通確認，健檢後 7 天內查看結果。",
+      metric: "7 天",
+    });
+  }
+
+  return plans.slice(0, 3);
+}
+
+function aiSignalsFor(patient) {
+  const text = patientSignalText(patient);
+  const signals = [];
+
+  if (patient.risk >= 80) signals.push(["高風險優先", `家庭風險 ${patient.risk}/100，建議列入今日主動追蹤。`]);
+  if (patient.labs.some((lab) => ["high", "low", "watch"].includes(lab[5]))) signals.push(["檢驗異常", "已偵測偏高/偏低或觀察項目，可先產生追蹤清單。"]);
+  if (patient.labs.some((lab) => lab[5] === "pending")) signals.push(["缺漏檢驗", "仍有待補項目，AI 可帶入下次抽血或既有紀錄查核。"]);
+  if (patient.consent.includes("待")) signals.push(["同意書未完成", "建議家訪時先補簽同意與資料使用範圍。"]);
+  if (text.includes("交通") || text.includes("船") || text.includes("天候")) signals.push(["可近性阻礙", "需把交通、船班或陪同者放進到檢動員。"]);
+  if (text.includes("跌倒") || text.includes("高齡")) signals.push(["高齡安全", "建議同步評估居家安全、復能與長照資源。"]);
+
+  return signals.slice(0, 3);
+}
+
+function aiToast(action, patientId) {
+  const patient = patients.find((p) => p.id === patientId) || selectedPatient();
+  showToast(`${action}：${patient.displayName} 已產生草稿`);
+}
+
 function setRole(role) {
   if (!["clinical", "resident"].includes(role)) return;
   state.role = role;
@@ -515,6 +598,7 @@ function renderOverview(patient) {
   return `
     <div class="section-grid">
       ${renderVisualOverview(patient)}
+      ${renderAiAssistantPanel(patient)}
       <div class="info-block">
         <h3>個資與同意</h3>
         <dl class="kv">
@@ -597,6 +681,58 @@ function schemaCard(title, items) {
   return `<div class="schema-card"><h4>${title}</h4><ul>${items.slice(0, 6).map((i) => `<li>${i}</li>`).join("")}</ul></div>`;
 }
 
+function renderAiAssistantPanel(patient) {
+  const signals = aiSignalsFor(patient);
+  const smartPlans = smartPlanFor(patient);
+  return `
+    <div class="ai-assistant-card wide">
+      <div class="ai-head">
+        <div>
+          <span class="ai-kicker">AI家庭護理師 / AI健康助理</span>
+          <h3>自動掌握個案動態，減少家訪後文書</h3>
+          <p>把家訪問卷、健檢項目、檢驗值與家庭模組整理成可簽核的照護摘要。</p>
+        </div>
+        <span class="ai-badge">SMART</span>
+      </div>
+      <div class="ai-grid">
+        <button class="ai-chip" onclick='aiToast("AI產生家訪摘要", ${jsArg(patient.id)})'>
+          <strong>文書草稿</strong>
+          <span>SOAP、家訪摘要、家屬提醒</span>
+        </button>
+        <button class="ai-chip" onclick='aiToast("AI追蹤個案動態", ${jsArg(patient.id)})'>
+          <strong>動態監測</strong>
+          <span>異常值、未到檢、交通阻礙</span>
+        </button>
+        <button class="ai-chip" onclick='aiToast("AI建立SMART建議", ${jsArg(patient.id)})'>
+          <strong>生活型態醫學</strong>
+          <span>飲食、活動、睡眠、戒菸檳、壓力支持</span>
+        </button>
+      </div>
+      <div class="ai-insight-row">
+        ${signals.map(([title, desc]) => `
+          <div class="ai-signal">
+            <strong>${title}</strong>
+            <span>${desc}</span>
+          </div>
+        `).join("")}
+      </div>
+      <div class="smart-list">
+        ${smartPlans.map((plan) => smartGoal(plan)).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function smartGoal(plan) {
+  return `
+    <div class="smart-goal">
+      <span>${plan.domain}</span>
+      <strong>${plan.goal}</strong>
+      <em>${plan.metric}</em>
+    </div>
+  `;
+}
+
 function renderQuestionnaire(patient) {
   return `
     <div class="section-grid">
@@ -611,6 +747,7 @@ function renderQuestionnaire(patient) {
           <div class="field"><label>急迫警訊</label><input value="${patient.questionnaire.alert}" /></div>
         </div>
       </div>
+      ${renderAiDocumentationPanel(patient)}
       ${questionnaireSections.map(([title, detail]) => `
         <div class="check-block">
           <h3>${title}</h3>
@@ -625,11 +762,40 @@ function renderQuestionnaire(patient) {
   `;
 }
 
+function renderAiDocumentationPanel(patient) {
+  const drafts = [
+    ["家訪摘要", `家庭目標：${patient.questionnaire.householdGoal}`],
+    ["SOAP 草稿", `問題：${patient.conditions.slice(0, 2).join("、") || "待補"}`],
+    ["家屬通知", `聯絡人：${patient.contact}，提醒同意書、健檢與追蹤。`],
+    ["追蹤待辦", `${aiSignalsFor(patient).map(([title]) => title).join("、") || "例行追蹤"}`],
+  ];
+  return `
+    <div class="ai-doc-card wide">
+      <div class="ai-head compact">
+        <div>
+          <span class="ai-kicker">AI文書減量</span>
+          <h3>問卷填完後自動整理成護理紀錄</h3>
+        </div>
+        <button class="ghost-btn" onclick='aiToast("AI整理問卷紀錄", ${jsArg(patient.id)})'>${icon("clipboard")}產生草稿</button>
+      </div>
+      <div class="ai-draft-grid">
+        ${drafts.map(([title, detail]) => `
+          <button class="ai-draft" onclick='showToast(${jsArg(`${title} 已加入草稿`)})'>
+            <strong>${title}</strong>
+            <span>${detail}</span>
+          </button>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
 function renderCheckup(patient) {
   const pkg = packageForAge(patient.age);
   return `
     <div class="section-grid">
       ${renderAgePackageRail(patient)}
+      ${renderAiCheckupCoach(patient, pkg)}
       <div class="info-block">
         <h3>系統自動判斷年齡層</h3>
         <dl class="kv">
@@ -649,6 +815,33 @@ function renderCheckup(patient) {
       <div class="check-block">
         <h3>檢驗/影像/篩檢</h3>
         <div class="check-list">${pkg.labs.map((item) => checkItem(item, "待排")).join("")}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAiCheckupCoach(patient, pkg) {
+  const actions = [
+    ["分齡排檢", `${pkg.band}：${pkg.core.slice(0, 3).join("、")}`],
+    ["到檢動員", patient.questionnaire.transport],
+    ["缺漏提醒", patient.labs.some((lab) => lab[5] === "pending") ? "有待補檢驗，建議併入健檢日" : "目前無待補檢驗"],
+  ];
+  return `
+    <div class="ai-doc-card wide ai-checkup-card">
+      <div class="ai-head compact">
+        <div>
+          <span class="ai-kicker">AI健康助理</span>
+          <h3>自動比對年齡層、風險與到檢阻礙</h3>
+        </div>
+        <button class="ghost-btn" onclick='aiToast("AI建立健檢排程", ${jsArg(patient.id)})'>${icon("calendar")}排程</button>
+      </div>
+      <div class="ai-draft-grid">
+        ${actions.map(([title, detail]) => `
+          <div class="ai-draft static">
+            <strong>${title}</strong>
+            <span>${detail}</span>
+          </div>
+        `).join("")}
       </div>
     </div>
   `;
@@ -682,6 +875,7 @@ function renderLabs(patient) {
   return `
     <div class="section-grid">
       ${renderLabVisual(patient)}
+      ${renderAiLabCoach(patient)}
       <div class="field-block wide">
         <h3>檢驗值輸入與異常旗標</h3>
         <div class="table-scroll">
@@ -701,6 +895,27 @@ function renderLabs(patient) {
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAiLabCoach(patient) {
+  const abnormalLabs = patient.labs.filter((lab) => ["high", "low", "watch"].includes(lab[5]));
+  const pendingLabs = patient.labs.filter((lab) => lab[5] === "pending");
+  return `
+    <div class="ai-doc-card wide ai-lab-card">
+      <div class="ai-head compact">
+        <div>
+          <span class="ai-kicker">AI檢驗摘要</span>
+          <h3>把檢驗值轉成追蹤重點與居民可讀說明</h3>
+        </div>
+        <button class="ghost-btn" onclick='aiToast("AI產生檢驗追蹤", ${jsArg(patient.id)})'>${icon("lab")}摘要</button>
+      </div>
+      <div class="ai-lab-summary">
+        <div><strong>${abnormalLabs.length}</strong><span>異常/觀察</span></div>
+        <div><strong>${pendingLabs.length}</strong><span>待補項目</span></div>
+        <div><strong>${smartPlanFor(patient).length}</strong><span>SMART建議</span></div>
       </div>
     </div>
   `;
@@ -742,6 +957,7 @@ function labStatus(status) {
 function renderTriage(patient) {
   return `
     <div class="section-grid">
+      ${renderAiSmartPanel(patient)}
       <div class="check-block">
         <h3>個人分流標籤</h3>
         <div class="check-list">${patient.tags.map((tag) => checkItem(tag, tag.includes("P1") ? "優先" : "追蹤")).join("")}</div>
@@ -763,9 +979,34 @@ function renderTriage(patient) {
   `;
 }
 
+function renderAiSmartPanel(patient) {
+  return `
+    <div class="ai-assistant-card wide ai-smart-card">
+      <div class="ai-head compact">
+        <div>
+          <span class="ai-kicker">AI健康助理</span>
+          <h3>分流後直接生成家庭照護與生活型態醫學任務</h3>
+        </div>
+        <button class="ghost-btn" onclick='aiToast("AI同步照護任務", ${jsArg(patient.id)})'>${icon("check")}同步</button>
+      </div>
+      <div class="smart-list">
+        ${smartPlanFor(patient).map((plan) => smartGoal(plan)).join("")}
+      </div>
+    </div>
+  `;
+}
+
 function renderRightPanel(patient) {
   return `
     <aside class="right-panel">
+      <section class="panel ai-side-panel">
+        <div class="panel-header"><div><h2 class="panel-title">AI家庭護理師</h2><p class="panel-note">文書、個案動態、SMART建議</p></div></div>
+        <div class="action-list">
+          <button class="btn" onclick='aiToast("AI產生家訪摘要", ${jsArg(patient.id)})'>${icon("clipboard")}產生家訪摘要</button>
+          <button class="ghost-btn" onclick='aiToast("AI追蹤個案動態", ${jsArg(patient.id)})'>${icon("alert")}掌握個案動態</button>
+          <button class="ghost-btn" onclick='aiToast("AI建立SMART建議", ${jsArg(patient.id)})'>${icon("check")}建立SMART建議</button>
+        </div>
+      </section>
       <section class="panel">
         <div class="panel-header"><div><h2 class="panel-title">下一步</h2><p class="panel-note">現場可直接執行</p></div></div>
         <div class="action-list">
@@ -848,6 +1089,7 @@ function residentHome() {
       <div class="progress-bar"><span style="width:68%"></span></div>
       <p class="minor" style="color:rgba(255,255,255,.76)">資料完成 68%，還有 2 位家人要確認。</p>
     </div>
+    ${residentAiAssistantCard()}
     <div class="task-list">
       ${residentTask("填家訪問卷", "還差生活習慣與交通協助", "12 分鐘", "clipboard")}
       ${residentTask("預約健檢", "6/18 上午還有名額", "可預約", "calendar")}
@@ -900,9 +1142,34 @@ function residentFamilyModulePreview() {
   `;
 }
 
+function residentAiAssistantCard() {
+  const smart = smartPlanFor(patients[0])[0];
+  return `
+    <section class="resident-card ai-resident-card">
+      <div class="resident-card-head">
+        <div>
+          <h3>AI健康助理</h3>
+          <p>把問卷、預約、檢驗與家庭照護任務整理成下一步</p>
+        </div>
+        <span class="status-pill green">啟用</span>
+      </div>
+      <div class="resident-ai-list">
+        <div><strong>提醒</strong><span>6/18 健檢前一天空腹、交通與陪同確認。</span></div>
+        <div><strong>整理</strong><span>問卷答案會轉成護理師可讀摘要，減少重複說明。</span></div>
+        <div><strong>建議</strong><span>依 SMART 原則給出本週可做到的生活型態目標。</span></div>
+      </div>
+      <div class="resident-smart-goal">
+        <span>本週SMART目標</span>
+        <strong>${smart.goal}</strong>
+      </div>
+    </section>
+  `;
+}
+
 function residentCarePlan() {
   return `
     <div class="resident-plan">
+      ${residentAiAssistantCard()}
       <section class="resident-card care-path-card">
         <div class="resident-card-head">
           <div>
@@ -983,6 +1250,14 @@ function residentSurvey() {
   const [question, options] = steps[state.residentStep];
   return `
     <div class="wizard">
+      <section class="resident-card ai-resident-card inline-ai">
+        <div class="resident-card-head">
+          <div>
+            <h3>AI問卷助理</h3>
+            <p>會把答案整理成家訪摘要、照護待辦與家庭健康模組。</p>
+          </div>
+        </div>
+      </section>
       <div class="stepper">${steps.map((_, i) => `<span class="step ${i <= state.residentStep ? "active" : ""}"></span>`).join("")}</div>
       <h2>${question}</h2>
       <div class="option-grid">${options.map((o) => `<label class="choice"><input type="checkbox" />${o}</label>`).join("")}</div>
@@ -1011,6 +1286,15 @@ function residentSchedule() {
 function residentResults() {
   return `
     <div class="task-list">
+      <section class="resident-card ai-resident-card inline-ai">
+        <div class="resident-card-head">
+          <div>
+            <h3>AI結果助理</h3>
+            <p>把檢驗值翻成看得懂的追蹤重點，並自動提醒護理師。</p>
+          </div>
+          <span class="status-pill yellow">需追蹤</span>
+        </div>
+      </section>
       <div class="task-card"><div class="task-icon">${icon("alert")}</div><div><strong>爸爸：血糖偏高</strong><div class="minor">請 2 週內由護理師電話追蹤，先不用緊張。</div></div><span class="status-pill yellow">需追蹤</span></div>
       <div class="task-card"><div class="task-icon">${icon("check")}</div><div><strong>媽媽：尿液正常</strong><div class="minor">維持喝水與規律回診。</div></div><span class="status-pill green">正常</span></div>
       <div class="task-card"><div class="task-icon">${icon("calendar")}</div><div><strong>LDCT 條件待確認</strong><div class="minor">需補填吸菸年數和家族史。</div></div><span class="status-pill">補資料</span></div>
@@ -1034,6 +1318,7 @@ window.setVillage = setVillage;
 window.selectVisualPatient = selectVisualPatient;
 window.selectAgePackage = selectAgePackage;
 window.showToast = showToast;
+window.aiToast = aiToast;
 window.state = state;
 window.render = render;
 
