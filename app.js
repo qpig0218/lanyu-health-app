@@ -1083,6 +1083,13 @@ function renderRightPanel(patient) {
 function renderResident() {
   return `
     <main class="resident-wrap">
+      <nav class="resident-web-nav" aria-label="民眾端主選單">
+        ${residentNav("home", "home", "首頁")}
+        ${residentNav("plan", "users", "照護")}
+        ${residentNav("survey", "clipboard", "問卷")}
+        ${residentNav("schedule", "calendar", "預約")}
+        ${residentNav("results", "lab", "結果")}
+      </nav>
       <section class="phone">
         <div class="phone-top">
           <div>
