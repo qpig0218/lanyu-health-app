@@ -279,6 +279,7 @@ function getInitialRole() {
 const state = {
   role: getInitialRole(),
   selectedId: patients[0].id,
+  clinicalView: "dashboard",
   tab: "overview",
   query: "",
   residentTab: "home",
@@ -400,7 +401,14 @@ function setRole(role) {
 }
 
 function setTab(tab) {
+  state.clinicalView = "workspace";
   state.tab = tab;
+  render();
+}
+
+function setClinicalView(view) {
+  if (!["dashboard", "workspace"].includes(view)) return;
+  state.clinicalView = view;
   render();
 }
 
@@ -419,6 +427,7 @@ function setVillage(village) {
 function selectVisualPatient(id, tab = state.tab) {
   state.selectedId = id;
   state.query = "";
+  state.clinicalView = "workspace";
   if (tab) state.tab = tab;
   render();
 }
@@ -426,6 +435,7 @@ function selectVisualPatient(id, tab = state.tab) {
 function selectAgePackage(index) {
   const target = agePackages[index];
   const match = patients.find((p) => packageForAge(p.age).band === target.band);
+  state.clinicalView = "workspace";
   state.tab = "checkup";
   if (match) {
     state.selectedId = match.id;
@@ -485,31 +495,217 @@ function appFooter() {
 function renderClinical() {
   const patient = selectedPatient();
   return `
-    <main class="layout">
-      <nav class="rail" aria-label="醫護端主選單">
-        ${railButton("overview", "home", "總覽")}
-        ${railButton("questionnaire", "clipboard", "問卷")}
-        ${railButton("checkup", "users", "健檢")}
-        ${railButton("labs", "lab", "檢驗")}
-        ${railButton("triage", "alert", "分流")}
+    <main class="layout clinical-layout">
+      <nav class="rail clinical-primary-rail" aria-label="醫護端主選單">
+        ${clinicalViewButton("dashboard", "home", "儀表板")}
+        ${clinicalViewButton("workspace", "clipboard", "工作區")}
+        <button class="clinical-resident-entry" title="民眾端" onclick="setRole('resident')">${icon("users")}<span>民眾端</span></button>
       </nav>
-      ${renderQueue()}
-      <section class="workspace">
-        ${renderClinicalCommand(patient)}
-        ${renderStats()}
-        <article class="panel record">
-          ${renderRecordHero(patient)}
-          ${renderTabs()}
-          <div class="tab-body">${renderTabBody(patient)}</div>
-        </article>
+      <section class="clinical-stage">
+        ${state.clinicalView === "dashboard" ? renderClinicalDashboard(patient) : renderClinicalWorkspace(patient)}
       </section>
-      ${renderRightPanel(patient)}
     </main>
   `;
 }
 
-function railButton(tab, iconName, label) {
-  return `<button class="${state.tab === tab ? "active" : ""}" title="${label}" onclick="setTab('${tab}')">${icon(iconName)}<span>${label}</span></button>`;
+function clinicalViewButton(view, iconName, label) {
+  return `<button class="${state.clinicalView === view ? "active" : ""}" title="${label}" onclick="setClinicalView('${view}')">${icon(iconName)}<span>${label}</span></button>`;
+}
+
+function renderClinicalDashboard(patient) {
+  return `
+    <section class="clinical-dashboard">
+      ${renderDashboardHero(patient)}
+      <section class="dashboard-stat-strip" aria-label="各項統計卡片">
+        ${renderStats()}
+      </section>
+      <section class="dashboard-main-grid">
+        ${lanyuVillageMap()}
+        ${renderTodayWorklist()}
+      </section>
+      ${renderDashboardAiBrief(patient)}
+    </section>
+  `;
+}
+
+function renderClinicalWorkspace(patient) {
+  return `
+    <section class="clinical-workspace">
+      <div class="workspace-context-bar">
+        <div>
+          <span class="ai-kicker">工作區</span>
+          <h2>家戶、個案資訊與填寫內容</h2>
+          <p>先選家戶與個案，再在中間卡片完成問卷、分齡健檢、檢驗值與分流設計。</p>
+        </div>
+        <div class="workspace-context-actions">
+          <button class="ghost-btn" onclick="setClinicalView('dashboard')">${icon("home")}回儀表板</button>
+          <button class="btn" onclick='aiToast("AI產生家訪摘要", ${jsArg(patient.id)})'>${icon("clipboard")}AI摘要</button>
+        </div>
+      </div>
+      <section class="clinical-workspace-grid">
+        ${renderQueue()}
+        <section class="workspace-center" aria-label="個案資訊">
+          <article class="panel record">
+            ${renderRecordHero(patient)}
+            ${renderTabs()}
+            <div class="tab-body">${renderTabBody(patient)}</div>
+          </article>
+        </section>
+        ${renderWorkspaceFillPanel(patient)}
+      </section>
+    </section>
+  `;
+}
+
+function renderDashboardHero(patient) {
+  const abnormalCount = patient.labs.filter((lab) => ["high", "low", "watch", "pending"].includes(lab[5])).length;
+  return `
+    <section class="dashboard-hero">
+      <div>
+        <span class="ai-kicker">醫護儀表板</span>
+        <h2>六部落服務、今日任務與風險總覽</h2>
+        <p>把全島服務量、家訪清單、到檢阻礙與高風險個案放在同一個入口，不在這裡填表。</p>
+      </div>
+      <div class="dashboard-hero-metrics">
+        <button onclick="setClinicalView('workspace')"><strong>18</strong><span>今日家訪</span></button>
+        <button onclick='setTab("labs")'><strong>${abnormalCount}</strong><span>檢驗待處理</span></button>
+        <button onclick='setTab("triage")'><strong>${patient.risk}</strong><span>最高家戶風險</span></button>
+      </div>
+    </section>
+  `;
+}
+
+function renderTodayWorklist() {
+  const items = [
+    {
+      title: "今日家訪與補訪",
+      detail: "12 戶完成、4 戶未遇、2 戶需再訪",
+      meta: "問卷",
+      icon: "home",
+      tab: "questionnaire",
+      patientId: "P-00018",
+    },
+    {
+      title: "健檢到檢動員",
+      detail: "P1 健檢優先與 P8 交通協助先處理",
+      meta: "健檢",
+      icon: "calendar",
+      tab: "checkup",
+      patientId: "P-00018",
+    },
+    {
+      title: "檢驗異常待簽核",
+      detail: "高風險 8 件，需完成居民可讀說明",
+      meta: "檢驗",
+      icon: "lab",
+      tab: "labs",
+      patientId: "P-00018",
+    },
+    {
+      title: "同意書與個資缺漏",
+      detail: "未完成同意與聯絡方式需家訪補齊",
+      meta: "個資",
+      icon: "shield",
+      tab: "overview",
+      patientId: "P-00033",
+    },
+    {
+      title: "家庭健康設計分流",
+      detail: "H2/H3/H8 模組需轉成 SMART 任務",
+      meta: "分流",
+      icon: "alert",
+      tab: "triage",
+      patientId: "P-00018",
+    },
+  ];
+
+  return `
+    <section class="panel today-work-panel">
+      <div class="panel-header">
+        <div><h2 class="panel-title">今日工作清單</h2><p class="panel-note">點選後進入工作區處理個案資料</p></div>
+      </div>
+      <div class="today-work-list">
+        ${items.map((item) => `
+          <button class="today-work-item" onclick='selectVisualPatient(${jsArg(item.patientId)}, ${jsArg(item.tab)})'>
+            <span class="task-icon">${icon(item.icon)}</span>
+            <span>
+              <strong>${item.title}</strong>
+              <small>${item.detail}</small>
+            </span>
+            <em>${item.meta}</em>
+          </button>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderDashboardAiBrief(patient) {
+  const signals = aiSignalsFor(patient);
+  return `
+    <section class="dashboard-ai-brief">
+      <div>
+        <span class="ai-kicker">AI健康助理</span>
+        <h3>儀表板只做判讀與分派，文書到工作區完成</h3>
+      </div>
+      <div class="dashboard-ai-grid">
+        ${signals.map(([title, detail]) => `
+          <button onclick='setTab("triage")'>
+            <strong>${title}</strong>
+            <span>${detail}</span>
+          </button>
+        `).join("")}
+        <button onclick='aiToast("AI整理今日工作摘要", ${jsArg(patient.id)})'>
+          <strong>今日摘要</strong>
+          <span>彙整家訪、健檢與異常檢驗，產生交班重點。</span>
+        </button>
+      </div>
+    </section>
+  `;
+}
+
+function renderWorkspaceFillPanel(patient) {
+  const pendingLabs = patient.labs.filter((lab) => lab[5] === "pending").length;
+  const abnormalLabs = patient.labs.filter((lab) => ["high", "low", "watch"].includes(lab[5])).length;
+  const tasks = [
+    ["家訪問卷", patient.questionnaire.householdGoal ? "已填核心欄位" : "待填", "questionnaire", "clipboard"],
+    ["分齡健檢", `${packageForAge(patient.age).band} 待確認`, "checkup", "calendar"],
+    ["檢驗值", `${abnormalLabs} 異常 / ${pendingLabs} 待補`, "labs", "lab"],
+    ["家庭模組", patient.householdTags.join("、"), "triage", "users"],
+  ];
+
+  return `
+    <aside class="workspace-fill-panel" aria-label="需要填寫的內容">
+      <section class="panel">
+        <div class="panel-header"><div><h2 class="panel-title">需要填寫的內容</h2><p class="panel-note">依目前個案自動帶出</p></div></div>
+        <div class="fill-task-list">
+          ${tasks.map(([title, detail, tab, iconName]) => `
+            <button class="fill-task" onclick='setTab(${jsArg(tab)})'>
+              <span class="task-icon">${icon(iconName)}</span>
+              <span><strong>${title}</strong><small>${detail}</small></span>
+              <em>填寫</em>
+            </button>
+          `).join("")}
+        </div>
+      </section>
+      <section class="panel ai-side-panel">
+        <div class="panel-header"><div><h2 class="panel-title">AI家庭護理師</h2><p class="panel-note">減少文書與掌握動態</p></div></div>
+        <div class="action-list">
+          <button class="btn" onclick='aiToast("AI產生家訪摘要", ${jsArg(patient.id)})'>${icon("clipboard")}產生摘要</button>
+          <button class="ghost-btn" onclick='aiToast("AI追蹤個案動態", ${jsArg(patient.id)})'>${icon("alert")}動態追蹤</button>
+          <button class="ghost-btn" onclick='aiToast("AI建立SMART建議", ${jsArg(patient.id)})'>${icon("check")}SMART建議</button>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-header"><div><h2 class="panel-title">下一步</h2><p class="panel-note">現場可直接執行</p></div></div>
+        <div class="action-list">
+          <button class="btn" onclick="showToast('已加入今日健檢排程')">${icon("calendar")}安排健檢</button>
+          <button class="ghost-btn" onclick="showToast('已建立轉介單草稿')">${icon("arrow")}建立轉介</button>
+          <button class="ghost-btn" onclick="showToast('已傳送家屬提醒')">${icon("check")}通知聯絡人</button>
+        </div>
+      </section>
+    </aside>
+  `;
 }
 
 function renderClinicalCommand(patient) {
@@ -1529,6 +1725,7 @@ function render() {
 
 window.setRole = setRole;
 window.setTab = setTab;
+window.setClinicalView = setClinicalView;
 window.setResidentTab = setResidentTab;
 window.setVillage = setVillage;
 window.selectVisualPatient = selectVisualPatient;
