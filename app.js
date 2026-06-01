@@ -307,10 +307,10 @@ function topbar() {
   return `
     <header class="topbar">
       <div class="brand">
-        <div class="brand-mark">AY</div>
+        <img class="company-logo" src="./assets/the-one-ai-logo.png" alt="The One AI 本一科技 Logo" />
         <div>
           <h1 class="brand-title">蘭嶼全人健康照護 APP</h1>
-          <p class="brand-subtitle">家戶圖譜、全齡健檢、檢驗值與家庭健康設計模組</p>
+          <p class="brand-subtitle">The One AI 本一科技｜家戶圖譜、全齡健檢、檢驗值與家庭健康設計模組</p>
         </div>
       </div>
       <div class="role-switch" aria-label="角色切換">
@@ -322,6 +322,21 @@ function topbar() {
         <button class="btn" onclick="showToast('本原型已模擬儲存')">${icon("check")}儲存</button>
       </div>
     </header>
+  `;
+}
+
+function appFooter() {
+  return `
+    <footer class="app-footer" aria-label="版權資訊">
+      <div class="footer-brand">
+        <img class="footer-logo" src="./assets/the-one-ai-logo.png" alt="The One AI 本一科技 Logo" />
+        <div>
+          <strong>The One AI 本一科技</strong>
+          <span>Copyright © 2026 The One AI 本一科技 版權所有</span>
+        </div>
+      </div>
+      <div class="footer-note">蘭嶼全人健康照護 APP 原型</div>
+    </footer>
   `;
 }
 
@@ -734,6 +749,7 @@ function render() {
   app.innerHTML = `
     ${topbar()}
     ${state.role === "clinical" ? renderClinical() : renderResident()}
+    ${appFooter()}
     ${state.toast ? `<div class="toast">${icon("check")}${state.toast}</div>` : ""}
   `;
 }
