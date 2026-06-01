@@ -5753,18 +5753,18 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 18px;
   text-align: center;
 }
 
 .landing-logo {
-  width: 58px;
-  height: 58px;
+  width: 76px;
+  height: 76px;
   object-fit: contain;
-  padding: 6px;
+  padding: 8px;
   background: rgba(255, 255, 255, 0.36);
   border: 1px solid rgba(255, 255, 255, 0.58);
-  border-radius: 20px;
+  border-radius: 24px;
   box-shadow: var(--glass-shadow-soft);
   -webkit-backdrop-filter: blur(12px) saturate(155%);
   backdrop-filter: blur(12px) saturate(155%);
@@ -6265,9 +6265,10 @@ body::after {
   }
 
   .landing-logo {
-    width: 48px;
-    height: 48px;
-    border-radius: 17px;
+    width: 58px;
+    height: 58px;
+    padding: 6px;
+    border-radius: 19px;
   }
 
   .landing-copy,
