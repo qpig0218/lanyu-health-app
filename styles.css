@@ -5534,14 +5534,28 @@ body::after {
     font-size: 19px;
   }
 
-  .dashboard-hero-metrics,
   .dashboard-stat-strip .stats-grid,
   .dashboard-ai-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .dashboard-hero-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
   .dashboard-hero-metrics button {
-    min-height: 66px;
+    min-height: 82px;
+    padding: 10px 8px;
+  }
+
+  .dashboard-hero-metrics strong {
+    font-size: 26px;
+  }
+
+  .dashboard-hero-metrics span {
+    font-size: 11px;
+    line-height: 1.2;
   }
 
   .today-work-item,
