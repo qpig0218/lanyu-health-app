@@ -244,6 +244,32 @@ const questionnaireSections = [
   ["年齡別模組", "兒少、孕產婦、LDCT、高齡功能、照顧者壓力"],
 ];
 
+const protocolDimensions = [
+  ["結構", "成員、決策者、常住狀態", 86],
+  ["健康", "慢病、健檢、疫苗、心理", 68],
+  ["資源", "經濟、教育、社會支持", 54],
+  ["照顧", "主要照顧者、照顧負荷", 72],
+  ["營養", "傳統食物、含糖飲料、鹽分", 48],
+  ["環境", "住居、飲水、颱風與氣候", 61],
+  ["文化", "長者意見、禁忌、季節節奏", 79],
+];
+
+const riskLevels = [
+  ["L1", "健康促進", "每年 2-3 次", "green"],
+  ["L2", "單一慢病", "每月 2-4 次", "yellow"],
+  ["L3", "多重慢病", "每週 1-2 次", "orange"],
+  ["L4", "重症/末期", "每週 3-7 次", "red"],
+];
+
+const villageServices = [
+  { name: "椰油", x: 44, y: 14, households: 456, level: "L2", focus: "衛生所、碼頭與慢病追蹤" },
+  { name: "漁人", x: 34, y: 29, households: 238, level: "L2", focus: "到檢交通與長者陪同" },
+  { name: "紅頭", x: 31, y: 46, households: 629, level: "L3", focus: "健檢動員、口腔與長照" },
+  { name: "朗島", x: 68, y: 25, households: 356, level: "L3", focus: "高齡安全與居家訪視" },
+  { name: "東清", x: 74, y: 45, households: 588, level: "L3", focus: "慢病、肺健康、家庭協議" },
+  { name: "野銀", x: 62, y: 73, households: 276, level: "L2", focus: "孕產支持與文化適切衛教" },
+];
+
 function getInitialRole() {
   const params = new URLSearchParams(window.location.search);
   const requestedRole = params.get("role") || window.location.hash.replace("#", "");
@@ -1051,21 +1077,18 @@ function renderResident() {
           ${residentNav("results", "lab", "結果")}
         </nav>
       </section>
-      <aside class="resident-side">
-        <section class="panel">
-          <div class="panel-header"><div><h2 class="panel-title">民眾端設計重點</h2><p class="panel-note">避免醫療術語，直接告訴居民下一步</p></div></div>
-          <div class="action-list">
-            <div class="action-item"><strong>一戶一張家庭健康卡</strong><span class="minor">看得到誰還沒填、誰要健檢、誰需要追蹤。</span></div>
-            <div class="action-item"><strong>問卷一次一題</strong><span class="minor">大型按鈕、可由家屬代填、可儲存草稿。</span></div>
-            <div class="action-item"><strong>結果用人話呈現</strong><span class="minor">正常、需追蹤、需盡快聯絡醫護，不顯示恐嚇式文字。</span></div>
-          </div>
-        </section>
-        <section class="panel">
-          <div class="panel-header"><div><h2 class="panel-title">六村服務圖</h2><p class="panel-note">可作為未來排程和巡迴路線入口</p></div></div>
-          <div class="map-strip"><div class="village">東清</div><div class="village">野銀</div><div class="village">朗島</div><div class="village">紅頭</div><div class="village">漁人</div><div class="village">椰油</div></div>
-        </section>
-      </aside>
+      ${renderResidentSide()}
     </main>
+  `;
+}
+
+function renderResidentSide() {
+  return `
+    <aside class="resident-side">
+      ${residentProtocolDashboard()}
+      ${lanyuVillageMap()}
+      ${residentReferralChain()}
+    </aside>
   `;
 }
 
@@ -1083,12 +1106,24 @@ function renderResidentBody() {
 
 function residentHome() {
   return `
-    <div class="family-card">
-      <h2>夏曼家</h2>
-      <p>家庭健康設計：慢病穩定 + 肺健康 + 到檢協助</p>
+    <div class="family-card family-command-card">
+      <div class="family-hero-grid">
+        <div>
+          <span class="family-eyebrow">一戶一視圖</span>
+          <h2>夏曼家</h2>
+          <p>慢病穩定 + 肺健康 + 到檢協助</p>
+        </div>
+        <div class="family-score-dial"><strong>68</strong><span>%</span></div>
+      </div>
+      <div class="family-member-row">
+        ${residentMember("爸", "L3", "血糖追蹤")}
+        ${residentMember("媽", "L2", "用藥穩定")}
+        ${residentMember("女", "L1", "家屬協助")}
+      </div>
       <div class="progress-bar"><span style="width:68%"></span></div>
-      <p class="minor" style="color:rgba(255,255,255,.76)">資料完成 68%，還有 2 位家人要確認。</p>
+      <p class="minor" style="color:rgba(255,255,255,.76)">家戶資料完成 68%，系統會依七大維度補齊缺口。</p>
     </div>
+    ${residentProtocolSnapshot()}
     ${residentAiAssistantCard()}
     <div class="task-list">
       ${residentTask("填家訪問卷", "還差生活習慣與交通協助", "12 分鐘", "clipboard")}
@@ -1100,8 +1135,35 @@ function residentHome() {
   `;
 }
 
+function residentMember(label, level, note) {
+  return `<span class="member-pill ${level.toLowerCase()}"><strong>${label}</strong><small>${level} ${note}</small></span>`;
+}
+
 function residentTask(title, desc, meta, iconName) {
   return `<div class="task-card"><div class="task-icon">${icon(iconName)}</div><div><strong>${title}</strong><div class="minor">${desc}</div></div><span class="status-pill">${meta}</span></div>`;
+}
+
+function residentProtocolSnapshot() {
+  return `
+    <section class="resident-card protocol-snapshot-card">
+      <div class="resident-card-head">
+        <div>
+          <h3>家戶健康設計 Protocol</h3>
+          <p>依附件 P08：七大維度、四級風險、每季回顧</p>
+        </div>
+        <span class="status-pill green">L3</span>
+      </div>
+      <div class="dimension-grid">
+        ${protocolDimensions.slice(0, 4).map(([label, detail, percent]) => `
+          <div class="dimension-chip">
+            <strong>${label}</strong>
+            <span>${detail}</span>
+            <i><b style="width:${percent}%"></b></i>
+          </div>
+        `).join("")}
+      </div>
+    </section>
+  `;
 }
 
 function residentHealthPathPreview() {
@@ -1130,7 +1192,7 @@ function residentFamilyModulePreview() {
       <div class="resident-card-head">
         <div>
           <h3>家庭健康設計模組</h3>
-          <p>夏曼家目前啟用 3 個照護模組</p>
+          <p>依 P08 家戶風險分層與家庭健康協議啟用</p>
         </div>
       </div>
       <div class="resident-module-list">
@@ -1199,7 +1261,126 @@ function residentCarePlan() {
           ${residentModule("H9", "環境健康溝通", "檢查結果、環境疑慮與風險說明", 25)}
         </div>
       </section>
+      <section class="resident-card protocol-snapshot-card">
+        <div class="resident-card-head">
+          <div>
+            <h3>七大維度補齊狀態</h3>
+            <p>讓護理師與家人看到還缺哪些資訊，不用重複問答</p>
+          </div>
+        </div>
+        <div class="dimension-grid all-dimensions">
+          ${protocolDimensions.map(([label, detail, percent]) => `
+            <div class="dimension-chip">
+              <strong>${label}</strong>
+              <span>${detail}</span>
+              <i><b style="width:${percent}%"></b></i>
+            </div>
+          `).join("")}
+        </div>
+      </section>
     </div>
+  `;
+}
+
+function residentProtocolDashboard() {
+  return `
+    <section class="panel protocol-panel">
+      <div class="panel-header"><div><h2 class="panel-title">P08 家庭健康設計</h2><p class="panel-note">從個案管理升級為一戶一視圖</p></div></div>
+      <div class="protocol-layout">
+        <div class="protocol-score">
+          <strong>L3</strong>
+          <span>多重慢病家戶</span>
+          <small>建議每週 1-2 次追蹤</small>
+        </div>
+        <div class="risk-levels">
+          ${riskLevels.map(([code, label, freq, level]) => `
+            <button class="risk-level ${level}" onclick='showToast(${jsArg(`${code} ${label}：${freq}`)})'>
+              <span>${code}</span>
+              <strong>${label}</strong>
+              <small>${freq}</small>
+            </button>
+          `).join("")}
+        </div>
+      </div>
+      <div class="protocol-actions">
+        <div><strong>家戶健康史</strong><span>家族疾病樹、跨代風險、生活轉折點</span></div>
+        <div><strong>家戶健康協議</strong><span>3-5 個 SMART 目標，每季回顧</span></div>
+        <div><strong>數位健康存摺</strong><span>家庭共享、權限分流、可追蹤留言</span></div>
+      </div>
+    </section>
+  `;
+}
+
+function lanyuVillageMap() {
+  return `
+    <section class="panel lanyu-map-panel">
+      <div class="panel-header"><div><h2 class="panel-title">六村服務地圖</h2><p class="panel-note">GIS 四層疊圖：地理、健康、資源、脆弱度</p></div></div>
+      <div class="lanyu-map">
+        <svg viewBox="0 0 320 430" role="img" aria-label="蘭嶼六村服務地圖">
+          <defs>
+            <linearGradient id="islandGradient" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="#8be7d0" stop-opacity=".88" />
+              <stop offset="54%" stop-color="#46b99f" stop-opacity=".82" />
+              <stop offset="100%" stop-color="#1f8f7a" stop-opacity=".78" />
+            </linearGradient>
+            <linearGradient id="riskWash" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="#34c759" stop-opacity=".25" />
+              <stop offset="45%" stop-color="#ffd60a" stop-opacity=".22" />
+              <stop offset="100%" stop-color="#ff453a" stop-opacity=".20" />
+            </linearGradient>
+          </defs>
+          <path class="map-sea" d="M32 46 C74 8 147 4 203 20 C266 38 301 86 305 151 C310 233 262 342 211 397 C168 443 94 420 55 366 C16 310 11 96 32 46Z" />
+          <path class="map-island" d="M150 24 C187 39 227 73 241 122 C256 175 239 232 222 279 C204 331 180 390 137 397 C98 404 69 359 65 309 C61 259 87 223 78 174 C69 125 78 82 108 50 C120 37 133 27 150 24Z" />
+          <path class="map-risk-wash" d="M164 72 C203 91 218 132 208 177 C198 219 219 249 201 294 C184 337 155 371 126 359 C94 346 95 295 103 253 C112 205 83 166 100 121 C113 88 134 70 164 72Z" />
+          <path class="map-road" d="M136 44 C108 91 99 139 109 187 C119 235 97 279 116 330 C126 358 146 380 166 390" />
+          <path class="map-road" d="M218 123 C173 134 131 157 91 184" />
+          <path class="map-road" d="M218 255 C176 251 134 268 96 304" />
+          <circle class="resource-dot clinic" cx="132" cy="70" r="6" />
+          <circle class="resource-dot pier" cx="104" cy="188" r="6" />
+          <circle class="resource-dot care" cx="201" cy="254" r="6" />
+        </svg>
+        ${villageServices.map((village) => `
+          <button class="map-pin ${village.level.toLowerCase()}" style="--x:${village.x}%; --y:${village.y}%" onclick='showToast(${jsArg(`${village.name}：${village.focus}`)})'>
+            <span>${village.name}</span>
+            <small>${village.level}</small>
+          </button>
+        `).join("")}
+      </div>
+      <div class="map-layer-legend">
+        <span>地理層</span><span>健康層</span><span>資源層</span><span>脆弱度層</span>
+      </div>
+      <div class="village-service-list">
+        ${villageServices.map((village) => `
+          <button onclick='showToast(${jsArg(`${village.name} ${village.households} 戶：${village.focus}`)})'>
+            <strong>${village.name}</strong>
+            <span>${village.households} 戶</span>
+            <em>${village.focus}</em>
+          </button>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function residentReferralChain() {
+  const steps = [
+    ["發現需求", "家訪、問卷或檢驗異常"],
+    ["溫暖轉介", "衛生所、IDS、長照、教會志工"],
+    ["一週追蹤", "確認到診、障礙與後續建議"],
+  ];
+  return `
+    <section class="panel referral-panel">
+      <div class="panel-header"><div><h2 class="panel-title">轉介責任鏈</h2><p class="panel-note">依 P08：不是開單後結束，而是持續追蹤</p></div></div>
+      <div class="referral-chain">
+        ${steps.map(([title, detail], index) => `
+          <div>
+            <span>${index + 1}</span>
+            <strong>${title}</strong>
+            <small>${detail}</small>
+          </div>
+        `).join("")}
+      </div>
+    </section>
   `;
 }
 
