@@ -684,21 +684,23 @@ function renderLabs(patient) {
       ${renderLabVisual(patient)}
       <div class="field-block wide">
         <h3>檢驗值輸入與異常旗標</h3>
-        <table class="lab-table">
-          <thead><tr><th>代碼</th><th>項目</th><th>值</th><th>單位</th><th>參考</th><th>狀態</th></tr></thead>
-          <tbody>
-            ${patient.labs.map((lab) => `
-              <tr>
-                <td class="num">${lab[0]}</td>
-                <td>${lab[1]}</td>
-                <td><input class="lab-input" value="${lab[2]}" onchange="showToast('已更新 ${lab[1]}')" /></td>
-                <td>${lab[3]}</td>
-                <td>${lab[4]}</td>
-                <td>${labStatus(lab[5])}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="lab-table">
+            <thead><tr><th>代碼</th><th>項目</th><th>值</th><th>單位</th><th>參考</th><th>狀態</th></tr></thead>
+            <tbody>
+              ${patient.labs.map((lab) => `
+                <tr>
+                  <td class="num">${lab[0]}</td>
+                  <td>${lab[1]}</td>
+                  <td><input class="lab-input" value="${lab[2]}" onchange="showToast('已更新 ${lab[1]}')" /></td>
+                  <td>${lab[3]}</td>
+                  <td>${lab[4]}</td>
+                  <td>${labStatus(lab[5])}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   `;
@@ -750,10 +752,12 @@ function renderTriage(patient) {
       </div>
       <div class="field-block wide">
         <h3>模組庫 H1-H10</h3>
-        <table class="module-table">
-          <thead><tr><th>模組</th><th>名稱</th><th>設計重點</th></tr></thead>
-          <tbody>${householdModules.map((m) => `<tr><td class="num">${m[0]}</td><td>${m[1]}</td><td>${m[2]}</td></tr>`).join("")}</tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="module-table">
+            <thead><tr><th>模組</th><th>名稱</th><th>設計重點</th></tr></thead>
+            <tbody>${householdModules.map((m) => `<tr><td class="num">${m[0]}</td><td>${m[1]}</td><td>${m[2]}</td></tr>`).join("")}</tbody>
+          </table>
+        </div>
       </div>
     </div>
   `;

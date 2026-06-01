@@ -3016,3 +3016,84 @@ body {
     transform: translateY(0);
   }
 }
+
+/* Scrollable wide tables inside glass cards */
+.table-scroll {
+  position: relative;
+  max-width: 100%;
+  margin-top: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(10, 132, 255, 0.42) rgba(255, 255, 255, 0.18);
+}
+
+.table-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(10, 132, 255, 0.42);
+  border-radius: 999px;
+}
+
+.table-scroll::after {
+  content: "";
+  position: sticky;
+  right: 0;
+  display: block;
+  width: 34px;
+  height: 0;
+  margin-top: -1px;
+  margin-left: auto;
+  pointer-events: none;
+  box-shadow: -18px 0 26px rgba(10, 132, 255, 0.12);
+}
+
+.table-scroll .lab-table,
+.table-scroll .module-table {
+  width: max-content;
+  margin: 0;
+}
+
+.table-scroll .lab-table {
+  min-width: 720px;
+}
+
+.table-scroll .module-table {
+  min-width: 820px;
+}
+
+.module-table th:nth-child(1),
+.module-table td:nth-child(1) {
+  width: 86px;
+}
+
+.module-table th:nth-child(2),
+.module-table td:nth-child(2) {
+  width: 220px;
+}
+
+.module-table th:nth-child(3),
+.module-table td:nth-child(3) {
+  min-width: 480px;
+}
+
+@media (max-width: 860px) {
+  .field-block {
+    overflow: hidden;
+  }
+
+  .table-scroll {
+    margin-right: -4px;
+    margin-left: -4px;
+    padding-bottom: 8px;
+  }
+}
