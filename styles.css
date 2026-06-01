@@ -4545,13 +4545,16 @@ body {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .clinical-command-metrics,
-  .clinical-command-actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .clinical-command-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .clinical-command-metrics button:last-child {
-    grid-column: 1 / -1;
+    grid-column: auto;
+  }
+
+  .clinical-command-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -4565,7 +4568,26 @@ body {
     font-size: 18px;
   }
 
-  .clinical-command-metrics,
+  .clinical-command-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .clinical-command-metrics button {
+    min-height: 66px;
+    padding: 9px 8px;
+    border-radius: 16px;
+  }
+
+  .clinical-command-metrics strong {
+    font-size: 22px;
+  }
+
+  .clinical-command-metrics span {
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
   .clinical-command-actions {
     grid-template-columns: minmax(0, 1fr);
   }
