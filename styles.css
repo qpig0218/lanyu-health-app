@@ -4861,3 +4861,235 @@ body {
     0 1px 0 rgba(255, 255, 255, 0.54) inset,
     0 0 0 1px rgba(255, 255, 255, 0.18) inset;
 }
+
+/* Lanyu illustrated background theme */
+:root {
+  --basalt: #18384a;
+  --ink: #163246;
+  --muted: #5d7280;
+  --line: rgba(42, 111, 142, 0.18);
+  --soft-line: rgba(42, 111, 142, 0.10);
+  --paper: #dff3f7;
+  --panel: rgba(255, 255, 255, 0.18);
+  --inset: rgba(209, 239, 247, 0.36);
+  --sea: #1d9bd1;
+  --sea-deep: #0c6f9f;
+  --reef: #d66c52;
+  --sun: #f3a641;
+  --leaf: #34a985;
+  --violet: #5d7fb8;
+  --danger: #d84f45;
+  --ok: #2f936e;
+  --warning: #b86d16;
+  --glass: rgba(255, 255, 255, 0.13);
+  --glass-strong: rgba(255, 255, 255, 0.28);
+  --glass-soft: rgba(255, 255, 255, 0.08);
+  --glass-line: rgba(255, 255, 255, 0.48);
+  --glass-edge: rgba(255, 255, 255, 0.82);
+  --glass-shadow: 0 24px 58px rgba(22, 73, 102, 0.10), 0 1px 0 rgba(255, 255, 255, 0.58) inset;
+  --glass-shadow-soft: 0 14px 34px rgba(22, 73, 102, 0.07), 0 1px 0 rgba(255, 255, 255, 0.50) inset;
+  --shadow: 0 20px 52px rgba(22, 73, 102, 0.12);
+}
+
+html {
+  background: #dff3f7;
+}
+
+body {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(222, 247, 251, 0.10) 46%, rgba(84, 168, 205, 0.16) 100%),
+    url("./assets/lanyu_app_background_desktop_16x9.png") center center / cover fixed no-repeat,
+    #dff3f7;
+}
+
+body::before {
+  background:
+    radial-gradient(circle at 48% 14%, rgba(255, 255, 255, 0.30), transparent 34%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16), transparent 38%, rgba(255, 255, 255, 0.08));
+  -webkit-mask-image: none;
+  mask-image: none;
+  opacity: 0.42;
+}
+
+body::after {
+  inset: auto 0 0;
+  height: 30vh;
+  background: linear-gradient(180deg, transparent 0%, rgba(27, 118, 160, 0.12) 42%, rgba(15, 90, 130, 0.18) 100%);
+  clip-path: none;
+  filter: none;
+  opacity: 0.70;
+}
+
+.topbar,
+.role-switch,
+.segmented,
+.rail button,
+.bottom-nav,
+.resident-web-nav,
+.panel,
+.stat,
+.record,
+.phone,
+.queue,
+.right-panel,
+.resident-card,
+.clinical-command,
+.ai-assistant-card,
+.ai-chip,
+.ai-draft,
+.ai-signal,
+.smart-goal,
+.info-block,
+.check-block,
+.field-block,
+.schema-card,
+.patient-card,
+.task-card,
+.action-item,
+.check-item,
+.choice,
+.ghost-btn,
+.searchbox input,
+.field input,
+.field select,
+.field textarea,
+.lab-input {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.08)),
+    rgba(233, 250, 253, 0.12);
+  border-color: rgba(255, 255, 255, 0.52);
+  box-shadow:
+    0 18px 42px rgba(18, 84, 122, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.66) inset,
+    0 -1px 0 rgba(25, 145, 190, 0.10) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.20) inset;
+}
+
+.topbar {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.16)),
+    rgba(219, 246, 252, 0.14);
+  border-bottom-color: rgba(255, 255, 255, 0.50);
+}
+
+.brand-title,
+.panel-title,
+.phone-title,
+.record h2,
+.clinical-command h2,
+.resident-card h3 {
+  color: #102e43;
+}
+
+.brand-subtitle,
+.minor,
+.panel-note,
+.clinical-command p,
+.resident-card p,
+.risk-labels,
+.footer-note {
+  color: rgba(41, 75, 96, 0.72);
+}
+
+.btn,
+.rail button.active,
+.bottom-nav button.active,
+.box {
+  color: #fff;
+  background:
+    linear-gradient(145deg, rgba(82, 190, 225, 0.94), rgba(20, 136, 197, 0.96)),
+    #1d9bd1;
+  border-color: rgba(255, 255, 255, 0.58);
+  box-shadow:
+    0 16px 34px rgba(18, 118, 174, 0.20),
+    0 1px 0 rgba(255, 255, 255, 0.58) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.18) inset;
+}
+
+.btn:hover {
+  background:
+    linear-gradient(145deg, rgba(55, 169, 211, 0.96), rgba(10, 105, 157, 0.98));
+}
+
+.role-switch button.active,
+.segmented button.active,
+.tabs button.active,
+.resident-web-nav button.active {
+  color: #075985;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.22)),
+    linear-gradient(145deg, rgba(123, 210, 230, 0.30), rgba(48, 169, 198, 0.16));
+  border-color: rgba(255, 255, 255, 0.66);
+}
+
+.ghost-btn,
+.searchbox input,
+.field input,
+.field select,
+.field textarea,
+.lab-input,
+.check-item,
+.choice {
+  color: #15364a;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.40), rgba(255, 255, 255, 0.12)),
+    rgba(226, 247, 250, 0.12);
+  border-color: rgba(255, 255, 255, 0.54);
+}
+
+.family-card {
+  background:
+    linear-gradient(135deg, rgba(37, 155, 207, 0.64), rgba(47, 173, 151, 0.48)),
+    rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.50);
+  box-shadow:
+    0 22px 48px rgba(15, 102, 150, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.62) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.16) inset;
+}
+
+.progress-bar span,
+.dimension-chip i,
+.resident-module i {
+  background: linear-gradient(90deg, #1d9bd1, #35aa8b);
+}
+
+.tag.ok,
+.status-pill.green {
+  background: rgba(52, 169, 133, 0.88);
+}
+
+.tag.warn,
+.status-pill.yellow {
+  color: #4b2f00;
+  background: rgba(243, 166, 65, 0.34);
+}
+
+.risk-score {
+  background:
+    radial-gradient(circle at 28% 18%, rgba(255, 255, 255, 0.54), transparent 30%),
+    linear-gradient(135deg, #d85b4f 0%, #f3a641 48%, #f7d65d 70%, #34a985 100%);
+}
+
+.risk-band {
+  background: linear-gradient(90deg, #d85b4f 0%, #df7452 26%, #f3a641 43%, #f7d65d 62%, #9fca53 78%, #34a985 100%);
+}
+
+.lanyu-map {
+  background:
+    linear-gradient(180deg, rgba(202, 235, 246, 0.68), rgba(153, 217, 228, 0.42)),
+    rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 860px) {
+  body {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(224, 248, 251, 0.08) 44%, rgba(41, 132, 184, 0.12) 100%),
+      url("./assets/lanyu_app_background_mobile_9x16.png") center center / cover scroll no-repeat,
+      #dff3f7;
+  }
+
+  body::after {
+    height: 24vh;
+  }
+}
