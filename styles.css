@@ -4577,12 +4577,14 @@ body {
 
 /* Resident desktop navigation */
 .resident-web-nav {
+  position: relative;
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
   padding: 8px;
+  overflow: hidden;
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.50), rgba(255, 255, 255, 0.16)),
     rgba(255, 255, 255, 0.18);
@@ -4647,4 +4649,193 @@ body {
   .resident-web-nav {
     display: none;
   }
+}
+
+/* Lighter liquid glass layer */
+:root {
+  --glass: rgba(255, 255, 255, 0.16);
+  --glass-strong: rgba(255, 255, 255, 0.30);
+  --glass-soft: rgba(255, 255, 255, 0.10);
+  --glass-line: rgba(255, 255, 255, 0.42);
+  --glass-edge: rgba(255, 255, 255, 0.74);
+  --glass-shadow: 0 22px 54px rgba(15, 23, 42, 0.09), 0 1px 0 rgba(255, 255, 255, 0.56) inset;
+  --glass-shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.06), 0 1px 0 rgba(255, 255, 255, 0.48) inset;
+}
+
+body {
+  background:
+    linear-gradient(152deg, rgba(255, 255, 255, 0.52) 0%, rgba(213, 243, 255, 0.42) 26%, rgba(219, 251, 238, 0.38) 58%, rgba(255, 246, 209, 0.26) 100%),
+    linear-gradient(24deg, rgba(10, 132, 255, 0.28) 0%, transparent 36%),
+    linear-gradient(206deg, transparent 8%, rgba(48, 209, 88, 0.18) 42%, rgba(255, 214, 10, 0.14) 78%, transparent 100%),
+    repeating-linear-gradient(118deg, rgba(255, 255, 255, 0.18) 0 1px, transparent 1px 46px),
+    #d9f1f3;
+}
+
+.topbar,
+.role-switch,
+.segmented,
+.rail button,
+.bottom-nav,
+.resident-web-nav,
+.panel,
+.stat,
+.record,
+.phone,
+.queue,
+.right-panel,
+.resident-card,
+.clinical-command,
+.ai-assistant-card,
+.ai-chip,
+.ai-draft,
+.ai-signal,
+.smart-goal,
+.info-block,
+.check-block,
+.field-block,
+.schema-card,
+.patient-card,
+.task-card,
+.action-item,
+.check-item,
+.choice,
+.ghost-btn,
+.searchbox input,
+.field input,
+.field select,
+.field textarea,
+.lab-input {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.07)),
+    rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.44);
+  box-shadow:
+    0 18px 44px rgba(15, 23, 42, 0.07),
+    0 1px 0 rgba(255, 255, 255, 0.62) inset,
+    0 -1px 0 rgba(10, 132, 255, 0.08) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.16) inset;
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  backdrop-filter: blur(10px) saturate(150%);
+}
+
+.record,
+.phone,
+.resident-side .resident-card,
+.protocol-snapshot-card,
+.care-path-card,
+.module-preview-card,
+.ai-resident-card {
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.06)),
+    rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.46);
+}
+
+.topbar,
+.bottom-nav,
+.resident-web-nav,
+.role-switch,
+.segmented {
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+}
+
+.panel::before,
+.stat::before,
+.record::before,
+.phone::before,
+.info-block::before,
+.check-block::before,
+.field-block::before,
+.schema-card::before,
+.patient-card::before,
+.task-card::before,
+.action-item::before,
+.resident-card::before,
+.clinical-command::before {
+  background:
+    linear-gradient(132deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.08) 34%, transparent 64%),
+    linear-gradient(318deg, rgba(255, 255, 255, 0.18), transparent 40%);
+  opacity: 0.28;
+}
+
+.panel::after,
+.stat::after,
+.record::after,
+.phone::after,
+.info-block::after,
+.check-block::after,
+.field-block::after,
+.schema-card::after,
+.patient-card::after,
+.task-card::after,
+.action-item::after,
+.resident-card::after,
+.clinical-command::after,
+.resident-web-nav::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  pointer-events: none;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.64) inset,
+    1px 0 0 rgba(255, 255, 255, 0.18) inset,
+    -1px 0 0 rgba(10, 132, 255, 0.08) inset,
+    0 -1px 0 rgba(48, 209, 88, 0.08) inset;
+}
+
+.family-card {
+  background:
+    linear-gradient(135deg, rgba(10, 132, 255, 0.62), rgba(32, 184, 150, 0.42)),
+    rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.42);
+  box-shadow:
+    0 22px 48px rgba(10, 132, 255, 0.16),
+    0 1px 0 rgba(255, 255, 255, 0.56) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.14) inset;
+  -webkit-backdrop-filter: blur(10px) saturate(155%);
+  backdrop-filter: blur(10px) saturate(155%);
+}
+
+.member-pill,
+.dimension-chip,
+.resident-module,
+.map-pin,
+.protocol-actions div,
+.village-service-card,
+.referral-chain div,
+.ai-lab-summary div,
+.resident-ai-list div,
+.resident-smart-goal {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.40);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.52) inset;
+  -webkit-backdrop-filter: blur(8px) saturate(145%);
+  backdrop-filter: blur(8px) saturate(145%);
+}
+
+.role-switch button.active,
+.segmented button.active,
+.tabs button.active,
+.resident-web-nav button.active {
+  color: rgba(0, 86, 140, 0.94);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0.18)),
+    linear-gradient(145deg, rgba(100, 210, 255, 0.30), rgba(10, 132, 255, 0.18));
+  border-color: rgba(255, 255, 255, 0.62);
+  box-shadow:
+    0 12px 28px rgba(10, 132, 255, 0.10),
+    0 1px 0 rgba(255, 255, 255, 0.72) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.18) inset;
+}
+
+.rail button.active,
+.bottom-nav button.active,
+.btn {
+  box-shadow:
+    0 16px 34px rgba(10, 132, 255, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.54) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.18) inset;
 }
