@@ -1143,7 +1143,12 @@ function residentHome() {
           <h2>夏曼家</h2>
           <p>慢病穩定 + 肺健康 + 到檢協助</p>
         </div>
-        <div class="family-score-dial"><strong>68</strong><span>%</span></div>
+        <div class="family-score-dial" aria-label="家戶資料完成度 68%">
+          <div class="family-score-core">
+            <div><strong>68</strong><span>%</span></div>
+            <small>完成度</small>
+          </div>
+        </div>
       </div>
       <div class="family-member-row">
         ${residentMember("爸", "L3", "血糖追蹤")}
