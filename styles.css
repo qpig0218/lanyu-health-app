@@ -3190,26 +3190,23 @@ body {
 
 /* Header title optical alignment */
 .brand > div {
-  position: relative;
-  display: flex;
-  align-items: center;
+  display: grid;
+  align-content: center;
+  gap: 5px;
   min-width: 0;
-  min-height: 42px;
+  min-height: 44px;
 }
 
 .brand-title {
   min-width: 0;
   max-width: 100%;
-  line-height: 1.04;
-  transform: translateY(1px);
+  line-height: 1.12;
+  transform: none;
 }
 
 .brand-subtitle {
-  position: absolute;
-  top: calc(50% + 10px);
-  left: 0;
   margin: 0;
-  line-height: 1.08;
+  line-height: 1.28;
 }
 
 @media (max-width: 520px) {
@@ -3218,12 +3215,13 @@ body {
   }
 
   .brand > div {
+    gap: 3px;
     min-height: 38px;
   }
 
   .brand-title {
     font-size: 14.5px;
-    line-height: 1.02;
+    line-height: 1.12;
     transform: translateY(0);
   }
 }
