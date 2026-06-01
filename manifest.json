@@ -1,6 +1,6 @@
 {
-  "name": "蘭嶼全人健康照護 APP",
-  "short_name": "蘭嶼照護",
+  "name": "Ayoi蘭嶼健康行動—護理健康到您家APP",
+  "short_name": "Ayoi蘭嶼健康",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f2f2f7",

@@ -342,7 +342,7 @@ function topbar() {
       <div class="brand">
         <img class="company-logo" src="./assets/the-one-ai-logo.png" alt="The One AI 本一科技 Logo" />
         <div>
-          <h1 class="brand-title">蘭嶼全人健康照護 APP</h1>
+          <h1 class="brand-title">Ayoi蘭嶼健康行動—護理健康到您家APP</h1>
           <p class="brand-subtitle">The One AI 本一科技｜家戶圖譜、全齡健檢、檢驗值與家庭健康設計模組</p>
         </div>
       </div>
@@ -368,7 +368,7 @@ function appFooter() {
           <span>Copyright © 2026 The One AI 本一科技 版權所有</span>
         </div>
       </div>
-      <div class="footer-note">蘭嶼全人健康照護 APP 原型</div>
+      <div class="footer-note">Ayoi蘭嶼健康行動—護理健康到您家APP 原型</div>
     </footer>
   `;
 }
