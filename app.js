@@ -385,9 +385,12 @@ function renderQueue() {
   return `
     <aside class="panel queue">
       <div class="panel-header">
-        <div>
-          <h2 class="panel-title">家戶與個案名冊</h2>
-          <p class="panel-note">依急迫程度、到檢阻礙和年齡切點排序</p>
+        <div class="queue-title-row">
+          <div>
+            <h2 class="panel-title">家戶與個案名冊</h2>
+            <p class="panel-note">依急迫程度、到檢阻礙和年齡切點排序</p>
+          </div>
+          <span class="queue-count">${filtered.length}/${patients.length}</span>
         </div>
       </div>
       <div class="searchbox">
@@ -397,11 +400,20 @@ function renderQueue() {
       <div class="patient-list">
         ${filtered.map((p) => `
           <button class="patient-card ${p.id === state.selectedId ? "active" : ""}" onclick="state.selectedId='${p.id}'; render()">
-            <div class="patient-top">
-              <span class="person-name">${p.displayName}</span>
+            <div class="patient-main">
+              <span class="patient-avatar">${p.displayName.slice(0, 1)}</span>
+              <span class="patient-copy">
+                <span class="person-name">${p.displayName}</span>
+                <span class="patient-meta-row">
+                  <span>${p.village}</span>
+                  <span class="dot"></span>
+                  <span>${p.age} 歲</span>
+                  <span class="dot"></span>
+                  <span class="patient-age-band">${packageForAge(p.age).band}</span>
+                </span>
+              </span>
               <span class="status-pill ${p.level === "橘" ? "yellow" : p.level === "紅" ? "red" : "green"}">${p.level}</span>
             </div>
-            <div class="minor">${p.village}・${p.age} 歲・${packageForAge(p.age).band}</div>
             <div class="tag-row">${p.tags.slice(0, 3).map((t) => `<span class="tag ${t.includes("P0") ? "urgent" : t.includes("P1") ? "warn" : ""}">${t}</span>`).join("")}</div>
           </button>
         `).join("") || `<div class="empty-state">沒有符合條件的個案</div>`}
