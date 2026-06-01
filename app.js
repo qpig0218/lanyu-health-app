@@ -495,6 +495,7 @@ function renderClinical() {
       </nav>
       ${renderQueue()}
       <section class="workspace">
+        ${renderClinicalCommand(patient)}
         ${renderStats()}
         <article class="panel record">
           ${renderRecordHero(patient)}
@@ -508,7 +509,29 @@ function renderClinical() {
 }
 
 function railButton(tab, iconName, label) {
-  return `<button class="${state.tab === tab ? "active" : ""}" title="${label}" onclick="setTab('${tab}')">${icon(iconName)}</button>`;
+  return `<button class="${state.tab === tab ? "active" : ""}" title="${label}" onclick="setTab('${tab}')">${icon(iconName)}<span>${label}</span></button>`;
+}
+
+function renderClinicalCommand(patient) {
+  const abnormalCount = patient.labs.filter((lab) => ["high", "low", "watch", "pending"].includes(lab[5])).length;
+  return `
+    <section class="clinical-command">
+      <div class="clinical-command-copy">
+        <span class="ai-kicker">醫護工作台</span>
+        <h2>今日家訪與健檢追蹤</h2>
+        <p>${patient.displayName}｜${patient.village}｜${patient.household}｜${patient.tags.slice(0, 3).join("、")}</p>
+      </div>
+      <div class="clinical-command-metrics">
+        <button onclick='setTab("questionnaire")'><strong>18</strong><span>今日家訪</span></button>
+        <button onclick='setTab("labs")'><strong>${abnormalCount}</strong><span>檢驗待處理</span></button>
+        <button onclick='setTab("triage")'><strong>${patient.risk}</strong><span>家戶風險</span></button>
+      </div>
+      <div class="clinical-command-actions">
+        <button class="btn" onclick='aiToast("AI產生家訪摘要", ${jsArg(patient.id)})'>${icon("clipboard")}AI摘要</button>
+        <button class="ghost-btn" onclick="showToast('已加入今日健檢排程')">${icon("calendar")}排健檢</button>
+      </div>
+    </section>
+  `;
 }
 
 function renderStats() {
