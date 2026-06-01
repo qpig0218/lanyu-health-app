@@ -27,6 +27,11 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   background:
@@ -3059,8 +3064,11 @@ body {
 
 .table-scroll .lab-table,
 .table-scroll .module-table {
+  table-layout: fixed;
   width: max-content;
   margin: 0;
+  font-size: 14px;
+  line-height: 1.36;
 }
 
 .table-scroll .lab-table {
@@ -3083,7 +3091,28 @@ body {
 
 .module-table th:nth-child(3),
 .module-table td:nth-child(3) {
-  min-width: 480px;
+  width: 514px;
+}
+
+.table-scroll .lab-table th,
+.table-scroll .lab-table td,
+.table-scroll .module-table th,
+.table-scroll .module-table td {
+  font-size: 14px;
+  line-height: 1.36;
+  text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+}
+
+.table-scroll .lab-table th,
+.table-scroll .module-table th {
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.table-scroll .lab-table td,
+.table-scroll .module-table td {
+  font-weight: 740;
 }
 
 @media (max-width: 860px) {
