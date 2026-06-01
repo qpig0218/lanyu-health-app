@@ -2883,3 +2883,96 @@ body {
     flex-basis: 138px;
   }
 }
+
+/* Risk score color ramp */
+.risk-stack {
+  min-width: 214px;
+}
+
+.risk-card {
+  display: grid;
+  justify-items: stretch;
+  gap: 8px;
+  width: 196px;
+}
+
+.risk-score {
+  position: relative;
+  display: grid;
+  place-items: center;
+  justify-self: end;
+  width: 96px;
+  height: 66px;
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(circle at 28% 18%, rgba(255, 255, 255, 0.54), transparent 30%),
+    linear-gradient(135deg, rgba(255, 69, 58, 0.95) 0%, rgba(255, 149, 0, 0.92) 45%, rgba(255, 214, 10, 0.90) 68%, rgba(52, 199, 89, 0.88) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  border-radius: 20px;
+  box-shadow: 0 16px 34px rgba(255, 69, 58, 0.15), 0 1px 0 rgba(255, 255, 255, 0.58) inset;
+  font-family: var(--font-num);
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.risk-score::after {
+  content: "";
+  position: absolute;
+  inset: auto 10px 9px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.42);
+  border-radius: 999px;
+}
+
+.risk-score span {
+  position: relative;
+  z-index: 1;
+}
+
+.risk-band {
+  position: relative;
+  height: 13px;
+  overflow: visible;
+  background: linear-gradient(90deg, #ff453a 0%, #ff6b2f 26%, #ff9f0a 43%, #ffd60a 62%, #a8d934 78%, #34c759 100%);
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.10), 0 1px 0 rgba(255, 255, 255, 0.66) inset;
+}
+
+.risk-marker {
+  position: absolute;
+  top: 50%;
+  left: clamp(0%, var(--risk-marker), 100%);
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border: 3px solid rgba(28, 28, 30, 0.72);
+  border-radius: 50%;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18), 0 0 0 4px rgba(255, 255, 255, 0.48);
+  transform: translate(-50%, -50%);
+}
+
+.risk-labels {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(60, 60, 67, 0.70);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+@media (max-width: 860px) {
+  .risk-stack {
+    width: 100%;
+  }
+
+  .risk-card {
+    width: min(220px, 100%);
+  }
+}
+
+@media (max-width: 520px) {
+  .risk-card {
+    width: 100%;
+  }
+}

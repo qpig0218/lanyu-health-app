@@ -479,7 +479,13 @@ function renderRecordHero(patient) {
         </div>
       </div>
       <div class="risk-stack">
-        <div class="risk-score">${patient.risk}</div>
+        <div class="risk-card" style="--risk-marker:${100 - patient.risk}%">
+          <div class="risk-score"><span>${patient.risk}</span></div>
+          <div class="risk-band" aria-label="風險色帶：紅色高風險、橘黃色中風險、綠色低風險">
+            <span class="risk-marker"></span>
+          </div>
+          <div class="risk-labels"><span>高</span><span>中</span><span>低</span></div>
+        </div>
         <div class="minor">家庭風險分數 / 100</div>
       </div>
     </div>
