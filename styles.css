@@ -5733,3 +5733,563 @@ body::after {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* RBAC landing and authenticated header */
+.landing-shell {
+  min-height: 100svh;
+  padding: 22px;
+}
+
+.landing-hero {
+  display: grid;
+  gap: 26px;
+  max-width: 1180px;
+  min-height: calc(100svh - 44px);
+  margin: 0 auto;
+  align-content: center;
+}
+
+.landing-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.landing-logo {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.36);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 20px;
+  box-shadow: var(--glass-shadow-soft);
+  -webkit-backdrop-filter: blur(12px) saturate(155%);
+  backdrop-filter: blur(12px) saturate(155%);
+}
+
+.landing-brand h1 {
+  margin: 0;
+  color: #102e43;
+  font-size: clamp(24px, 4vw, 42px);
+  line-height: 1.12;
+}
+
+.landing-brand p {
+  margin: 6px 0 0;
+  color: rgba(41, 75, 96, 0.76);
+  font-size: 14px;
+}
+
+.landing-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(340px, 0.8fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+.landing-copy,
+.login-panel,
+.support-hub-head {
+  position: relative;
+  overflow: hidden;
+  padding: 22px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.36), rgba(255, 255, 255, 0.08)),
+    rgba(233, 250, 253, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.54);
+  border-radius: 28px;
+  box-shadow: var(--glass-shadow-soft);
+  -webkit-backdrop-filter: blur(12px) saturate(155%);
+  backdrop-filter: blur(12px) saturate(155%);
+}
+
+.landing-copy::before,
+.login-panel::before,
+.support-hub-head::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.52), transparent 30%),
+    linear-gradient(132deg, rgba(255, 255, 255, 0.26), transparent 60%);
+  opacity: 0.34;
+}
+
+.landing-copy > *,
+.login-panel > *,
+.support-hub-head > * {
+  position: relative;
+  z-index: 1;
+}
+
+.landing-copy {
+  display: grid;
+  align-content: center;
+  gap: 16px;
+}
+
+.landing-copy h2,
+.support-hub-head h2 {
+  margin: 0;
+  color: #102e43;
+  font-size: clamp(25px, 3.5vw, 42px);
+  line-height: 1.12;
+}
+
+.landing-copy p,
+.support-hub-head p {
+  margin: 0;
+  color: rgba(41, 75, 96, 0.76);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.rbac-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.rbac-summary div {
+  display: grid;
+  gap: 6px;
+  min-height: 118px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 20px;
+}
+
+.rbac-summary strong {
+  color: #075985;
+  font-size: 15px;
+}
+
+.rbac-summary span {
+  color: rgba(22, 50, 70, 0.78);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.login-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.login-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.login-panel h2 {
+  margin: 0;
+  color: #102e43;
+  font-size: 20px;
+}
+
+.login-panel p {
+  margin: 4px 0 0;
+  color: rgba(41, 75, 96, 0.72);
+  font-size: 12px;
+}
+
+.login-role-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.login-role-card {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 4px 12px;
+  min-width: 0;
+  padding: 14px;
+  color: inherit;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.20);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 22px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.52) inset;
+}
+
+.login-role-card.active {
+  border-color: rgba(29, 155, 209, 0.64);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0.14)),
+    rgba(29, 155, 209, 0.12);
+  box-shadow: 0 16px 34px rgba(18, 118, 174, 0.12), 0 1px 0 rgba(255, 255, 255, 0.64) inset;
+}
+
+.login-role-icon {
+  grid-row: span 3;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: #fff;
+  background: linear-gradient(145deg, rgba(82, 190, 225, 0.94), rgba(20, 136, 197, 0.96));
+  border-radius: 16px;
+}
+
+.login-role-card strong {
+  color: #102e43;
+  font-size: 15px;
+}
+
+.login-role-card small,
+.login-role-card em {
+  color: rgba(41, 75, 96, 0.72);
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.42;
+}
+
+.login-form-mock {
+  display: grid;
+  gap: 10px;
+}
+
+.login-form-mock label {
+  display: grid;
+  gap: 5px;
+}
+
+.login-form-mock label span {
+  color: rgba(41, 75, 96, 0.74);
+  font-size: 12px;
+  font-weight: 780;
+}
+
+.login-form-mock input {
+  min-height: 44px;
+  padding: 0 13px;
+  color: #15364a;
+  background: rgba(255, 255, 255, 0.30);
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  border-radius: 15px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.58) inset;
+}
+
+.login-submit {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.app-topbar-auth {
+  grid-template-columns: minmax(190px, 1fr) auto minmax(190px, 1fr);
+  min-height: 70px;
+}
+
+.account-area {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.account-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 46px;
+  padding: 4px 11px 4px 4px;
+  color: #102e43;
+  background: rgba(255, 255, 255, 0.26);
+  border: 1px solid rgba(255, 255, 255, 0.50);
+  border-radius: 999px;
+  box-shadow: var(--glass-shadow-soft);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  backdrop-filter: blur(10px) saturate(150%);
+}
+
+.account-avatar {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.54), transparent 32%),
+    linear-gradient(145deg, rgba(52, 169, 133, 0.94), rgba(29, 155, 209, 0.94));
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 50%;
+  font-weight: 900;
+}
+
+.account-copy {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  text-align: left;
+}
+
+.account-copy strong,
+.account-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-copy strong {
+  font-size: 13px;
+  line-height: 1.1;
+}
+
+.account-copy small {
+  color: rgba(41, 75, 96, 0.70);
+  font-size: 11px;
+}
+
+.brand-centered {
+  justify-self: center;
+  text-align: center;
+}
+
+.brand-centered > div {
+  justify-items: center;
+}
+
+.auth-actions {
+  justify-content: flex-end;
+}
+
+.role-scope-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 0 12px;
+  color: #075985;
+  background: rgba(255, 255, 255, 0.26);
+  border: 1px solid rgba(255, 255, 255, 0.50);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.resident-support-hub {
+  gap: 16px;
+}
+
+.support-hub-head {
+  display: grid;
+  gap: 9px;
+}
+
+.support-hub-head h2 {
+  font-size: 22px;
+}
+
+.support-hub-head p {
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.resident-support-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.88fr) minmax(360px, 1.12fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.resident-support-grid .protocol-layout {
+  grid-template-columns: minmax(112px, 132px) minmax(0, 1fr);
+}
+
+.resident-support-grid .protocol-score {
+  min-height: 142px;
+}
+
+.resident-support-grid .risk-levels {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.resident-support-grid .protocol-actions {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.resident-support-grid .lanyu-map {
+  min-height: 336px;
+}
+
+@media (max-width: 1180px) {
+  .app-topbar-auth {
+    grid-template-columns: minmax(130px, 0.75fr) minmax(0, 1.5fr) minmax(184px, 0.75fr);
+    gap: 10px;
+  }
+
+  .app-topbar-auth .brand-subtitle,
+  .app-topbar-auth .role-scope-pill {
+    display: none;
+  }
+
+  .app-topbar-auth .brand-centered {
+    min-width: 0;
+  }
+
+  .app-topbar-auth .brand-centered .brand-title {
+    max-width: min(420px, 100%);
+    font-size: 17px;
+    line-height: 1.18;
+    white-space: normal;
+  }
+
+  .app-topbar-auth .auth-actions .ghost-btn {
+    min-width: 0;
+    padding-inline: 11px;
+  }
+
+  .account-chip {
+    max-width: 170px;
+  }
+
+  .resident-support-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 861px) and (max-width: 1040px) {
+  .app-topbar-auth {
+    grid-template-columns: minmax(104px, 0.65fr) minmax(0, 1.55fr) minmax(142px, 0.8fr);
+  }
+
+  .app-topbar-auth .brand-centered .brand-title {
+    max-width: 360px;
+    font-size: 15px;
+  }
+
+  .app-topbar-auth .account-chip {
+    max-width: 132px;
+  }
+
+  .app-topbar-auth .auth-actions .ghost-btn:first-of-type {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .landing-shell {
+    padding: 14px;
+  }
+
+  .landing-hero {
+    align-content: start;
+    min-height: 100svh;
+  }
+
+  .landing-brand {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .landing-grid,
+  .rbac-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-topbar-auth {
+    grid-template-columns: 46px minmax(0, 1fr) 46px;
+    gap: 8px;
+    min-height: 62px;
+  }
+
+  .account-area {
+    grid-column: 1;
+  }
+
+  .account-chip {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 3px;
+    border-radius: 16px;
+  }
+
+  .account-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 14px;
+  }
+
+  .account-copy {
+    display: none;
+  }
+
+  .brand-centered {
+    grid-column: 2;
+    gap: 0;
+  }
+
+  .brand-centered .company-logo {
+    display: none;
+  }
+
+  .brand-centered .brand-title {
+    text-align: center;
+  }
+
+  .auth-actions {
+    display: flex;
+    grid-column: 3;
+    justify-content: end;
+  }
+
+  .auth-actions .ghost-btn,
+  .auth-actions .role-scope-pill {
+    display: none;
+  }
+
+  .auth-actions .btn {
+    min-width: 42px;
+    width: 42px;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .auth-actions .btn .icon {
+    margin: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .landing-brand h1 {
+    font-size: 24px;
+  }
+
+  .landing-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 17px;
+  }
+
+  .landing-copy,
+  .login-panel,
+  .support-hub-head {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .login-role-card {
+    grid-template-columns: 40px minmax(0, 1fr);
+    padding: 12px;
+  }
+
+  .login-role-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+  }
+
+  .brand-centered .brand-title {
+    font-size: 14px;
+    line-height: 1.15;
+  }
+}

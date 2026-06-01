@@ -278,6 +278,9 @@ function getInitialRole() {
 
 const state = {
   role: getInitialRole(),
+  loginRole: getInitialRole(),
+  sessionRole: null,
+  authenticated: false,
   selectedId: patients[0].id,
   clinicalView: "dashboard",
   tab: "overview",
@@ -507,6 +510,58 @@ function labStatusText(status) {
   return map[status] || "待判";
 }
 
+function accountProfile() {
+  if (state.sessionRole === "resident") {
+    return {
+      initials: "夏",
+      name: "夏曼家",
+      role: "民眾帳號",
+      scope: "家庭共享權限",
+      badge: "家戶成員",
+    };
+  }
+
+  return {
+    initials: "護",
+    name: "阿德醫師",
+    role: "醫療/護理",
+    scope: "L4 一線可視範圍",
+    badge: "照護團隊",
+  };
+}
+
+function selectLoginRole(role) {
+  if (!["clinical", "resident"].includes(role)) return;
+  state.loginRole = role;
+  render();
+}
+
+function loginAs(role = state.loginRole) {
+  if (!["clinical", "resident"].includes(role)) return;
+  state.authenticated = true;
+  state.sessionRole = role;
+  state.role = role;
+  state.loginRole = role;
+  state.aiDraft = null;
+  const nextUrl = new URL(window.location.href);
+  nextUrl.searchParams.delete("role");
+  nextUrl.hash = role;
+  window.history.replaceState(null, "", `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`);
+  render();
+}
+
+function logout() {
+  const currentRole = state.sessionRole || state.role;
+  state.authenticated = false;
+  state.sessionRole = null;
+  state.loginRole = currentRole;
+  state.aiDraft = null;
+  const nextUrl = new URL(window.location.href);
+  nextUrl.hash = "";
+  window.history.replaceState(null, "", `${nextUrl.pathname}${nextUrl.search}`);
+  render();
+}
+
 function closeAiDraft() {
   state.aiDraft = null;
   render();
@@ -519,6 +574,15 @@ function applyAiDraft() {
 
 function setRole(role) {
   if (!["clinical", "resident"].includes(role)) return;
+  if (!state.authenticated) {
+    state.loginRole = role;
+    render();
+    return;
+  }
+  if (state.sessionRole === "resident" && role !== "resident") {
+    showToast("民眾帳號無權限進入醫療/護理系統");
+    return;
+  }
   state.role = role;
   const nextUrl = new URL(window.location.href);
   nextUrl.searchParams.delete("role");
@@ -583,21 +647,30 @@ function showToast(message) {
 }
 
 function topbar() {
+  const profile = accountProfile();
   return `
-    <header class="topbar">
-      <div class="brand">
+    <header class="topbar app-topbar-auth">
+      <div class="account-area">
+        <button class="account-chip" onclick="showToast('${profile.name}｜${profile.scope}')">
+          <span class="account-avatar">${profile.initials}</span>
+          <span class="account-copy">
+            <strong>${profile.name}</strong>
+            <small>${profile.role}</small>
+          </span>
+        </button>
+      </div>
+      <div class="brand brand-centered">
         <img class="company-logo" src="./assets/the-one-ai-logo.png" alt="The One AITech 本一科技 Logo" />
         <div>
           <h1 class="brand-title">Ayoi蘭嶼健康行動❤️護理健康到您家APP</h1>
           <p class="brand-subtitle">The One AITech 本一科技｜家戶圖譜、全齡健檢、檢驗值與家庭健康設計模組</p>
         </div>
       </div>
-      <div class="role-switch" aria-label="角色切換">
-        <button data-role="clinical" class="${state.role === "clinical" ? "active" : ""}">${icon("lab")}醫療/護理端</button>
-        <button data-role="resident" class="${state.role === "resident" ? "active" : ""}">${icon("home")}民眾端</button>
-      </div>
-      <div class="utility-actions">
+      <div class="utility-actions auth-actions">
+        <span class="role-scope-pill">${icon("shield")}${profile.badge}</span>
+        ${state.sessionRole === "clinical" && state.role === "resident" ? `<button class="ghost-btn" onclick="setRole('clinical')">${icon("lab")}回醫護</button>` : ""}
         <button class="ghost-btn" onclick="showToast('已建立離線草稿，回到有網路時同步')">${icon("shield")}離線模式</button>
+        <button class="ghost-btn" onclick="logout()">${icon("arrow")}切換身份</button>
         <button class="btn" onclick="showToast('本原型已模擬儲存')">${icon("check")}儲存</button>
       </div>
     </header>
@@ -616,6 +689,72 @@ function appFooter() {
       </div>
       <div class="footer-note">Ayoi蘭嶼健康行動❤️護理健康到您家APP 原型</div>
     </footer>
+  `;
+}
+
+function renderLanding() {
+  const selected = state.loginRole;
+  const loginLabel = selected === "clinical" ? "登入醫療/護理系統" : "登入民眾頁面";
+  return `
+    <main class="landing-shell" aria-label="系統登入">
+      <section class="landing-hero">
+        <div class="landing-brand">
+          <img class="landing-logo" src="./assets/the-one-ai-logo.png" alt="The One AITech 本一科技 Logo" />
+          <div>
+            <h1>Ayoi蘭嶼健康行動❤️護理健康到您家APP</h1>
+            <p>The One AITech 本一科技｜全人健康照護與家庭健康設計模組</p>
+          </div>
+        </div>
+        <div class="landing-grid">
+          <section class="landing-copy">
+            <span class="ai-kicker">RBAC 登入入口</span>
+            <h2>依照身份進入正確的照護工作流</h2>
+            <p>醫療/護理端處理家訪、個案、健檢、檢驗與分流；民眾端只顯示家庭可共享的健康路徑、問卷、預約與結果。</p>
+            <div class="rbac-summary">
+              <div><strong>醫療/護理</strong><span>個案名冊、檢驗值、家訪紀錄、AI文書草稿、分流簽核</span></div>
+              <div><strong>民眾</strong><span>家庭健康路徑、問卷填寫、健檢預約、結果解釋、家戶共照</span></div>
+            </div>
+          </section>
+          <section class="login-panel">
+            <div class="login-panel-head">
+              <div>
+                <h2>選擇登入角色</h2>
+                <p>Prototype Mock RBAC</p>
+              </div>
+              <span class="status-pill green">安全模式</span>
+            </div>
+            <div class="login-role-grid" role="radiogroup" aria-label="登入角色">
+              ${loginRoleCard("clinical", "醫療/護理系統", "阿德醫師 / L4一線權限", "可處理名冊、問卷、健檢、檢驗與AI摘要", "lab")}
+              ${loginRoleCard("resident", "民眾頁面", "夏曼家 / 家戶成員", "只能看家庭共享資料、填問卷、預約與查看結果", "home")}
+            </div>
+            <div class="login-form-mock">
+              <label>
+                <span>帳號</span>
+                <input value="${selected === "clinical" ? "nurse.ayoi@theone" : "family.h014"}" aria-label="帳號" />
+              </label>
+              <label>
+                <span>密碼</span>
+                <input type="password" value="mockpass" aria-label="密碼" />
+              </label>
+              <button class="btn login-submit" onclick="loginAs('${selected}')">${icon("shield")}${loginLabel}</button>
+            </div>
+          </section>
+        </div>
+      </section>
+      ${appFooter()}
+    </main>
+  `;
+}
+
+function loginRoleCard(role, title, account, desc, iconName) {
+  const active = state.loginRole === role;
+  return `
+    <button class="login-role-card ${active ? "active" : ""}" data-login-role="${role}" onclick="selectLoginRole('${role}')" aria-checked="${active}" role="radio">
+      <span class="login-role-icon">${icon(iconName)}</span>
+      <strong>${title}</strong>
+      <small>${account}</small>
+      <em>${desc}</em>
+    </button>
   `;
 }
 
@@ -1437,9 +1576,16 @@ function renderResident() {
 
 function renderResidentSide() {
   return `
-    <aside class="resident-side">
-      ${residentProtocolDashboard()}
-      ${lanyuVillageMap()}
+    <aside class="resident-side resident-support-hub">
+      <section class="support-hub-head">
+        <span class="ai-kicker">照護支援模組</span>
+        <h2>家庭設計、部落服務與轉介責任鏈</h2>
+        <p>P08、六部落地圖與轉介流程屬於照護團隊的決策支援，放在民眾手機視圖旁邊，作為一戶一視圖的背景工作台。</p>
+      </section>
+      <div class="resident-support-grid">
+        ${residentProtocolDashboard()}
+        ${lanyuVillageMap()}
+      </div>
       ${residentReferralChain()}
     </aside>
   `;
@@ -1880,6 +2026,14 @@ function renderAiDraftDrawer() {
 }
 
 function render() {
+  if (!state.authenticated) {
+    app.innerHTML = `
+      ${renderLanding()}
+      ${state.toast ? `<div class="toast">${icon("check")}${state.toast}</div>` : ""}
+    `;
+    return;
+  }
+
   app.innerHTML = `
     ${topbar()}
     ${state.role === "clinical" ? renderClinical() : renderResident()}
@@ -1892,6 +2046,9 @@ function render() {
 window.setRole = setRole;
 window.setTab = setTab;
 window.setClinicalView = setClinicalView;
+window.selectLoginRole = selectLoginRole;
+window.loginAs = loginAs;
+window.logout = logout;
 window.setResidentTab = setResidentTab;
 window.setVillage = setVillage;
 window.selectVisualPatient = selectVisualPatient;
@@ -1912,6 +2069,17 @@ document.addEventListener("click", (event) => {
 
 window.addEventListener("hashchange", () => {
   const role = getInitialRole();
+  if (!state.authenticated) {
+    state.loginRole = role;
+    state.role = role;
+    render();
+    return;
+  }
+  if (state.sessionRole === "resident" && role !== "resident") {
+    window.location.hash = "resident";
+    showToast("民眾帳號無權限進入醫療/護理系統");
+    return;
+  }
   if (role !== state.role) {
     state.role = role;
     render();
