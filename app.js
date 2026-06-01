@@ -231,7 +231,7 @@ const householdModules = [
 
 const piiFields = [
   ["姓名", "身分證/替代識別碼", "生日", "性別"],
-  ["村別與地址", "聯絡電話", "緊急聯絡人", "主要照顧者"],
+  ["部落/行政村與地址", "聯絡電話", "緊急聯絡人", "主要照顧者"],
   ["同意書版本", "資料使用範圍", "撤回同意紀錄", "權限稽核"],
 ];
 
@@ -413,7 +413,7 @@ function setVillage(village) {
   const match = patients.find((p) => p.village === village);
   state.query = state.query === village ? "" : village;
   if (match && state.query) state.selectedId = match.id;
-  showToast(state.query ? `已篩選 ${village} 名冊` : "已清除村別篩選");
+  showToast(state.query ? `已篩選 ${village}部落名冊` : "已清除部落篩選");
 }
 
 function selectVisualPatient(id, tab = state.tab) {
@@ -570,7 +570,7 @@ function renderQueue() {
       </div>
       <div class="searchbox">
         ${icon("search")}
-        <input value="${state.query}" oninput="state.query=this.value; render()" placeholder="搜尋姓名、村別、分流標籤" />
+        <input value="${state.query}" oninput="state.query=this.value; render()" placeholder="搜尋姓名、部落、分流標籤" />
       </div>
       <div class="patient-list">
         ${filtered.map((p) => `
@@ -660,7 +660,7 @@ function renderOverview(patient) {
       <div class="info-block">
         <h3>家庭健康圖譜</h3>
         <dl class="kv">
-          <dt>村別</dt><dd>${patient.village}</dd>
+          <dt>部落</dt><dd>${patient.village}</dd>
           <dt>家戶狀態</dt><dd>${patient.questionnaire.home}</dd>
           <dt>到檢阻礙</dt><dd>${patient.questionnaire.transport}</dd>
           <dt>家庭目標</dt><dd>${patient.questionnaire.householdGoal}</dd>
@@ -684,7 +684,7 @@ function renderVisualOverview(patient) {
   return `
     <div class="visual-suite wide">
       <section class="visual-panel visual-villages">
-        <div class="visual-head"><strong>六村熱點</strong><span>${state.query || patient.village}</span></div>
+        <div class="visual-head"><strong>六部落熱點</strong><span>${state.query || patient.village}</span></div>
         <div class="village-map">
           ${villageNames.map((village) => {
             const count = patients.filter((p) => p.village === village).length;
@@ -790,7 +790,7 @@ function renderQuestionnaire(patient) {
         <div class="field-grid">
           <div class="field"><label>訪視方式</label><select><option>面訪</option><option>電話</option><option>第二次補訪</option></select></div>
           <div class="field"><label>語言需求</label><select><option>國語可溝通</option><option>需族語協助</option><option>家屬協助</option></select></div>
-          <div class="field"><label>可通知方式</label><select><option>電話 + LINE</option><option>村辦通知</option><option>家屬代收</option></select></div>
+          <div class="field"><label>可通知方式</label><select><option>電話 + LINE</option><option>部落/村辦通知</option><option>家屬代收</option></select></div>
           <div class="field"><label>家庭最擔心問題</label><input value="${patient.questionnaire.householdGoal}" /></div>
           <div class="field"><label>到檢協助</label><input value="${patient.questionnaire.transport}" /></div>
           <div class="field"><label>急迫警訊</label><input value="${patient.questionnaire.alert}" /></div>
@@ -1094,7 +1094,7 @@ function renderResident() {
         <div class="phone-top">
           <div>
             <h2 class="phone-title">我的家庭健康</h2>
-            <div class="minor">東清村 H-014</div>
+            <div class="minor">東清部落 H-014</div>
           </div>
           <span class="status-pill green">已同意</span>
         </div>
@@ -1349,9 +1349,9 @@ function residentProtocolDashboard() {
 function lanyuVillageMap() {
   return `
     <section class="panel lanyu-map-panel">
-      <div class="panel-header"><div><h2 class="panel-title">六村服務地圖</h2><p class="panel-note">GIS 四層疊圖：地理、健康、資源、脆弱度</p></div></div>
+      <div class="panel-header"><div><h2 class="panel-title">六部落服務地圖</h2><p class="panel-note">六部落、四行政村（椰油、紅頭、朗島、東清）｜GIS 四層疊圖</p></div></div>
       <div class="lanyu-map">
-        <svg viewBox="0 0 320 430" role="img" aria-label="蘭嶼六村服務地圖">
+        <svg viewBox="0 0 320 430" role="img" aria-label="蘭嶼六部落服務地圖">
           <defs>
             <linearGradient id="islandGradient" x1="0" x2="1" y1="0" y2="1">
               <stop offset="0%" stop-color="#8be7d0" stop-opacity=".88" />
@@ -1386,7 +1386,7 @@ function lanyuVillageMap() {
       </div>
       <div class="village-service-list">
         ${villageServices.map((village) => `
-          <button onclick='showToast(${jsArg(`${village.name} ${village.households} 戶：${village.focus}`)})'>
+          <button onclick='showToast(${jsArg(`${village.name}部落 ${village.households} 戶：${village.focus}`)})'>
             <strong>${village.name}</strong>
             <span>${village.households} 戶</span>
             <em>${village.focus}</em>
