@@ -214,6 +214,8 @@ const patients = [
   },
 ];
 
+const villageNames = ["東清", "野銀", "朗島", "紅頭", "漁人", "椰油"];
+
 const householdModules = [
   ["H1", "健檢到檢動員", "家庭健檢日曆、提醒、交通、陪同、空腹提醒"],
   ["H2", "慢病穩定", "血壓血糖紀錄、拿藥提醒、共同飲食策略"],
@@ -270,6 +272,10 @@ function packageForAge(age) {
   };
 }
 
+function jsArg(value) {
+  return JSON.stringify(value);
+}
+
 function selectedPatient() {
   return patients.find((p) => p.id === state.selectedId) || patients[0];
 }
@@ -292,6 +298,33 @@ function setTab(tab) {
 function setResidentTab(tab) {
   state.residentTab = tab;
   render();
+}
+
+function setVillage(village) {
+  const match = patients.find((p) => p.village === village);
+  state.query = state.query === village ? "" : village;
+  if (match && state.query) state.selectedId = match.id;
+  showToast(state.query ? `已篩選 ${village} 名冊` : "已清除村別篩選");
+}
+
+function selectVisualPatient(id, tab = state.tab) {
+  state.selectedId = id;
+  state.query = "";
+  if (tab) state.tab = tab;
+  render();
+}
+
+function selectAgePackage(index) {
+  const target = agePackages[index];
+  const match = patients.find((p) => packageForAge(p.age).band === target.band);
+  state.tab = "checkup";
+  if (match) {
+    state.selectedId = match.id;
+    state.query = "";
+    render();
+    return;
+  }
+  showToast(`${target.band} 目前無示範個案`);
 }
 
 function showToast(message) {
@@ -370,12 +403,22 @@ function railButton(tab, iconName, label) {
 }
 
 function renderStats() {
+  const stats = [
+    ["今日家訪", "18", "完成 12 / 未遇 4 / 需再訪 2", 67, "questionnaire"],
+    ["健檢名冊", "642", "已同意 71%", 71, "checkup"],
+    ["需優先追蹤", "39", "P0/P1/P6/P9", 39, "triage"],
+    ["檢驗異常待簽核", "27", "高風險 8 件", 27, "labs"],
+  ];
   return `
     <div class="stats-grid">
-      <div class="stat"><div class="stat-label">今日家訪</div><div class="stat-value">18</div><small>完成 12 / 未遇 4 / 需再訪 2</small></div>
-      <div class="stat"><div class="stat-label">健檢名冊</div><div class="stat-value">642</div><small>已同意 71%</small></div>
-      <div class="stat"><div class="stat-label">需優先追蹤</div><div class="stat-value">39</div><small>P0/P1/P6/P9</small></div>
-      <div class="stat"><div class="stat-label">檢驗異常待簽核</div><div class="stat-value">27</div><small>高風險 8 件</small></div>
+      ${stats.map(([label, value, note, percent, tab]) => `
+        <button class="stat" onclick='setTab(${jsArg(tab)})'>
+          <div class="stat-label">${label}</div>
+          <div class="stat-value">${value}</div>
+          <div class="stat-meter"><span style="width:${percent}%"></span></div>
+          <small>${note}</small>
+        </button>
+      `).join("")}
     </div>
   `;
 }
@@ -465,6 +508,7 @@ function renderTabBody(patient) {
 function renderOverview(patient) {
   return `
     <div class="section-grid">
+      ${renderVisualOverview(patient)}
       <div class="info-block">
         <h3>個資與同意</h3>
         <dl class="kv">
@@ -492,6 +536,53 @@ function renderOverview(patient) {
           ${schemaCard("照護", ["P0-P9 個人分流", "H1-H10 家庭模組", "追蹤期限", "轉介去向", "完成狀態"])}
         </div>
       </div>
+    </div>
+  `;
+}
+
+function renderVisualOverview(patient) {
+  const sortedByAge = [...patients].sort((a, b) => a.age - b.age);
+  return `
+    <div class="visual-suite wide">
+      <section class="visual-panel visual-villages">
+        <div class="visual-head"><strong>六村熱點</strong><span>${state.query || patient.village}</span></div>
+        <div class="village-map">
+          ${villageNames.map((village) => {
+            const count = patients.filter((p) => p.village === village).length;
+            const active = state.query === village || (!state.query && patient.village === village);
+            return `
+              <button class="village-node ${active ? "active" : ""}" style="--heat:${Math.max(0.28, count * 0.34)}" onclick='setVillage(${jsArg(village)})'>
+                <span class="village-orb"></span>
+                <strong>${village}</strong>
+                <small>${count || 0} 戶</small>
+              </button>
+            `;
+          }).join("")}
+        </div>
+      </section>
+      <section class="visual-panel visual-risk">
+        <div class="visual-head"><strong>個案風險流</strong><span>${patient.risk}/100</span></div>
+        <div class="risk-flow">
+          ${[...patients].sort((a, b) => b.risk - a.risk).map((p) => `
+            <button class="risk-row ${p.id === patient.id ? "active" : ""}" onclick='selectVisualPatient(${jsArg(p.id)}, "triage")'>
+              <span>${p.displayName}</span>
+              <span class="risk-track"><span style="width:${p.risk}%"></span></span>
+              <strong>${p.risk}</strong>
+            </button>
+          `).join("")}
+        </div>
+      </section>
+      <section class="visual-panel visual-age">
+        <div class="visual-head"><strong>分齡軌道</strong><span>${packageForAge(patient.age).band}</span></div>
+        <div class="age-rail">
+          ${sortedByAge.map((p) => `
+            <button class="age-pin ${p.id === patient.id ? "active" : ""}" style="left:${Math.min(94, Math.max(4, (p.age / 90) * 100))}%" onclick='selectVisualPatient(${jsArg(p.id)}, "checkup")'>
+              <span>${p.age}</span>
+              <small>${p.village}</small>
+            </button>
+          `).join("")}
+        </div>
+      </section>
     </div>
   `;
 }
@@ -532,6 +623,7 @@ function renderCheckup(patient) {
   const pkg = packageForAge(patient.age);
   return `
     <div class="section-grid">
+      ${renderAgePackageRail(patient)}
       <div class="info-block">
         <h3>系統自動判斷年齡層</h3>
         <dl class="kv">
@@ -556,29 +648,73 @@ function renderCheckup(patient) {
   `;
 }
 
+function renderAgePackageRail(patient) {
+  const activeBand = packageForAge(patient.age).band;
+  return `
+    <div class="visual-panel age-package-panel wide">
+      <div class="visual-head"><strong>全齡健檢軌道</strong><span>${activeBand}</span></div>
+      <div class="age-package-grid">
+        ${agePackages.map((pkg, index) => {
+          const hasSample = patients.some((p) => packageForAge(p.age).band === pkg.band);
+          return `
+            <button class="age-package ${pkg.band === activeBand ? "active" : ""} ${hasSample ? "has-sample" : ""}" onclick="selectAgePackage(${index})">
+              <span>${pkg.band}</span>
+              <small>${pkg.modules[0]}</small>
+            </button>
+          `;
+        }).join("")}
+      </div>
+    </div>
+  `;
+}
+
 function checkItem(text, status) {
   return `<div class="check-item"><span class="box">${icon("check")}</span><div>${text}</div><span class="status-pill">${status}</span></div>`;
 }
 
 function renderLabs(patient) {
   return `
-    <div class="field-block">
-      <h3>檢驗值輸入與異常旗標</h3>
-      <table class="lab-table">
-        <thead><tr><th>代碼</th><th>項目</th><th>值</th><th>單位</th><th>參考</th><th>狀態</th></tr></thead>
-        <tbody>
-          ${patient.labs.map((lab, idx) => `
-            <tr>
-              <td class="num">${lab[0]}</td>
-              <td>${lab[1]}</td>
-              <td><input class="lab-input" value="${lab[2]}" onchange="showToast('已更新 ${lab[1]}')" /></td>
-              <td>${lab[3]}</td>
-              <td>${lab[4]}</td>
-              <td>${labStatus(lab[5])}</td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
+    <div class="section-grid">
+      ${renderLabVisual(patient)}
+      <div class="field-block wide">
+        <h3>檢驗值輸入與異常旗標</h3>
+        <table class="lab-table">
+          <thead><tr><th>代碼</th><th>項目</th><th>值</th><th>單位</th><th>參考</th><th>狀態</th></tr></thead>
+          <tbody>
+            ${patient.labs.map((lab) => `
+              <tr>
+                <td class="num">${lab[0]}</td>
+                <td>${lab[1]}</td>
+                <td><input class="lab-input" value="${lab[2]}" onchange="showToast('已更新 ${lab[1]}')" /></td>
+                <td>${lab[3]}</td>
+                <td>${lab[4]}</td>
+                <td>${labStatus(lab[5])}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderLabVisual(patient) {
+  const totals = patient.labs.reduce((acc, lab) => {
+    acc[lab[5]] = (acc[lab[5]] || 0) + 1;
+    return acc;
+  }, {});
+  return `
+    <div class="visual-panel lab-visual-panel wide">
+      <div class="visual-head"><strong>檢驗狀態圖</strong><span>異常 ${((totals.high || 0) + (totals.low || 0) + (totals.watch || 0))}/${patient.labs.length}</span></div>
+      <div class="lab-orbit">
+        ${patient.labs.map((lab) => `
+          <button class="lab-bubble ${lab[5]}" onclick='showToast(${jsArg(`${lab[1]}：${lab[2]}${lab[3]}`)})'>
+            <strong>${lab[0]}</strong>
+            <span>${lab[2]}${lab[3]}</span>
+            ${labStatus(lab[5])}
+          </button>
+        `).join("")}
+      </div>
     </div>
   `;
 }
@@ -769,6 +905,9 @@ function render() {
 window.setRole = setRole;
 window.setTab = setTab;
 window.setResidentTab = setResidentTab;
+window.setVillage = setVillage;
+window.selectVisualPatient = selectVisualPatient;
+window.selectAgePackage = selectAgePackage;
 window.showToast = showToast;
 window.state = state;
 window.render = render;
