@@ -1670,7 +1670,7 @@ function residentFamilyHealthCard() {
         </div>
       </div>
       <div class="progress-bar"><span style="width:68%"></span></div>
-      <p class="minor" style="color:rgba(255,255,255,.78)">護理師會依問卷與健檢結果更新家庭健康設計，家人只看需要一起完成的下一步。</p>
+      <p class="minor family-card-note">護理師會依問卷與健檢結果更新家庭健康設計，家人只看需要一起完成的下一步。</p>
     </div>
   `;
 }

@@ -6696,6 +6696,169 @@ body::after {
   margin: 0 auto 18px;
 }
 
+.resident-app .family-health-design-card {
+  position: relative;
+  isolation: isolate;
+  gap: 16px;
+  padding: clamp(17px, 2.4vw, 24px);
+  color: #fff;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(255, 214, 102, 0.34), transparent 21%),
+    radial-gradient(circle at 9% 88%, rgba(100, 210, 255, 0.32), transparent 34%),
+    linear-gradient(138deg, rgba(8, 51, 82, 0.96) 0%, rgba(13, 99, 132, 0.91) 40%, rgba(34, 173, 150, 0.84) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.64);
+  border-radius: 30px;
+  box-shadow:
+    0 26px 56px rgba(8, 66, 98, 0.25),
+    0 1px 0 rgba(255, 255, 255, 0.72) inset,
+    0 -1px 0 rgba(3, 38, 62, 0.18) inset;
+  -webkit-backdrop-filter: blur(12px) saturate(162%);
+  backdrop-filter: blur(12px) saturate(162%);
+}
+
+.resident-app .family-health-design-card::before,
+.resident-app .family-health-design-card::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.resident-app .family-health-design-card::before {
+  inset: 1px;
+  z-index: -1;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.26), transparent 34%),
+    linear-gradient(180deg, transparent 58%, rgba(3, 38, 62, 0.18));
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.resident-app .family-health-design-card::after {
+  right: -72px;
+  bottom: -104px;
+  z-index: -2;
+  width: 260px;
+  height: 220px;
+  background:
+    radial-gradient(circle, rgba(255, 214, 102, 0.28), transparent 58%),
+    radial-gradient(circle at 72% 30%, rgba(255, 255, 255, 0.18), transparent 42%);
+  filter: blur(4px);
+}
+
+.resident-app .family-health-design-card h2 {
+  margin-bottom: 10px;
+  color: #fff;
+  font-size: clamp(25px, 3vw, 34px);
+  line-height: 1.08;
+  text-shadow: 0 2px 14px rgba(3, 38, 62, 0.34);
+}
+
+.resident-app .family-health-design-card .family-hero-grid > div:first-child > p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.90);
+  font-size: 15px;
+  font-weight: 760;
+}
+
+.resident-app .family-health-design-card .family-eyebrow {
+  color: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.44);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.42) inset;
+}
+
+.resident-app .family-health-design-card .member-pill {
+  min-height: 62px;
+  padding: 12px 13px;
+  color: #fff;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.07)),
+    rgba(3, 38, 62, 0.13);
+  border-color: rgba(255, 255, 255, 0.40);
+  box-shadow:
+    0 12px 28px rgba(3, 38, 62, 0.10),
+    0 1px 0 rgba(255, 255, 255, 0.40) inset;
+}
+
+.resident-app .family-health-design-card .member-pill strong {
+  color: #fff;
+  font-size: 14px;
+}
+
+.resident-app .family-health-design-card .member-pill small {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 11px;
+}
+
+.resident-app .family-health-design-card .member-pill.l1 {
+  background:
+    linear-gradient(145deg, rgba(74, 222, 128, 0.28), rgba(20, 184, 166, 0.18)),
+    rgba(3, 38, 62, 0.10);
+}
+
+.resident-app .family-health-design-card .member-pill.l2 {
+  background:
+    linear-gradient(145deg, rgba(255, 214, 102, 0.30), rgba(52, 199, 89, 0.14)),
+    rgba(3, 38, 62, 0.10);
+}
+
+.resident-app .family-health-design-card .member-pill.l3 {
+  background:
+    linear-gradient(145deg, rgba(255, 159, 10, 0.34), rgba(10, 132, 255, 0.13)),
+    rgba(3, 38, 62, 0.12);
+}
+
+.resident-app .family-health-design-card .family-design-panel {
+  padding: 15px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08)),
+    rgba(2, 30, 48, 0.18);
+  border-color: rgba(255, 255, 255, 0.42);
+  border-radius: 24px;
+  box-shadow:
+    0 16px 32px rgba(3, 38, 62, 0.13),
+    0 1px 0 rgba(255, 255, 255, 0.48) inset;
+}
+
+.resident-app .family-health-design-card .family-design-panel span {
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.resident-app .family-health-design-card .family-design-panel strong {
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(3, 38, 62, 0.18);
+}
+
+.resident-app .family-health-design-card .family-design-metrics span {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.20), rgba(255, 255, 255, 0.07)),
+    rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.34);
+}
+
+.resident-app .family-health-design-card .family-design-metrics small {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.resident-app .family-health-design-card .family-design-metrics i,
+.resident-app .family-health-design-card .progress-bar {
+  background: rgba(3, 38, 62, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.20) inset;
+}
+
+.resident-app .family-health-design-card .family-design-metrics i::before,
+.resident-app .family-health-design-card .progress-bar span {
+  background: linear-gradient(90deg, #7dd3fc 0%, #34d399 58%, #fde68a 100%);
+}
+
+.resident-app .family-health-design-card .family-card-note {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
 @media (min-width: 861px) {
   .resident-app .resident-wrap {
     grid-template-columns: minmax(0, 1fr);
