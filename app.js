@@ -687,7 +687,7 @@ function appFooter() {
           <span>Copyright © 2026 The One AITech 本一科技 版權所有</span>
         </div>
       </div>
-      <div class="footer-note">Ayoi蘭嶼健康行動❤️護理健康到您家APP 原型</div>
+      <div class="footer-note">Ayoi蘭嶼健康行動APP 原型</div>
     </footer>
   `;
 }
@@ -709,7 +709,7 @@ function renderLanding() {
           <section class="login-panel">
             <div class="login-panel-head">
               <div>
-                <h2>選擇登入角色</h2>
+                <h2>選擇登入身分</h2>
                 <p>Prototype Mock RBAC</p>
               </div>
               <span class="status-pill green">安全模式</span>
