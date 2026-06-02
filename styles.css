@@ -5761,7 +5761,7 @@ body::after {
   width: 76px;
   height: 76px;
   object-fit: contain;
-  padding: 8px;
+  padding: 2px;
   background: rgba(255, 255, 255, 0.36);
   border: 1px solid rgba(255, 255, 255, 0.58);
   border-radius: 24px;
@@ -5773,6 +5773,7 @@ body::after {
 .landing-brand h1 {
   margin: 0;
   color: #102e43;
+  font-family: system-ui, sans-serif;
   font-size: clamp(24px, 4vw, 42px);
   line-height: 1.12;
 }
@@ -5830,6 +5831,10 @@ body::after {
   display: grid;
   align-content: center;
   gap: 16px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.22)),
+    rgba(233, 250, 253, 0.32);
+  border-color: rgba(255, 255, 255, 0.72);
 }
 
 .landing-copy h2,
@@ -5838,6 +5843,11 @@ body::after {
   color: #102e43;
   font-size: clamp(25px, 3.5vw, 42px);
   line-height: 1.12;
+}
+
+.landing-copy h2 {
+  color: #125381;
+  font-size: 32px;
 }
 
 .landing-copy p,
@@ -6267,8 +6277,12 @@ body::after {
   .landing-logo {
     width: 58px;
     height: 58px;
-    padding: 6px;
+    padding: 2px;
     border-radius: 19px;
+  }
+
+  .landing-copy h2 {
+    font-size: 28px;
   }
 
   .landing-copy,

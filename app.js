@@ -701,7 +701,7 @@ function renderLanding() {
         <div class="landing-brand">
           <img class="landing-logo" src="./assets/the-one-ai-logo.png" alt="The One AITech 本一科技 Logo" />
           <div>
-            <h1>Ayoi蘭嶼健康行動❤️護理健康到您家APP</h1>
+            <h1>Ayoi 蘭嶼健康行動APP</h1>
             <p>The One AITech 本一科技｜全人健康照護與家庭健康設計模組</p>
           </div>
         </div>
