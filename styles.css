@@ -6701,3 +6701,171 @@ body::after {
     align-items: start;
   }
 }
+
+/* Resident responsive web layout */
+.resident-app {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 100svh;
+}
+
+.resident-app .app-footer {
+  position: static;
+  z-index: 1;
+  width: min(100% - 36px, 1180px);
+  margin: 0 auto 18px;
+}
+
+@media (min-width: 861px) {
+  .resident-app .resident-wrap {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100% - 36px, 1180px);
+    max-width: 1180px;
+    padding: 18px 0 22px;
+  }
+
+  .resident-app .resident-web-nav,
+  .resident-app .phone {
+    width: 100%;
+    max-width: none;
+  }
+
+  .resident-app .phone {
+    justify-self: stretch;
+    overflow: visible;
+    border-radius: 30px;
+  }
+
+  .resident-app .phone-top {
+    padding: 22px 24px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.34);
+  }
+
+  .resident-app .phone-body {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 16px;
+    min-height: 0;
+    padding: 18px 20px 22px;
+    overflow: visible;
+  }
+
+  .resident-app .phone-body > .family-health-design-card {
+    grid-column: 1 / span 7;
+    margin-top: 0;
+    min-height: 100%;
+  }
+
+  .resident-app .phone-body > .ai-resident-card {
+    grid-column: 8 / -1;
+    margin-top: 0;
+  }
+
+  .resident-app .phone-body > .task-list:not(:only-child) {
+    grid-column: 1 / span 5;
+    margin-top: 0;
+  }
+
+  .resident-app .phone-body > .care-path-card {
+    grid-column: 6 / -1;
+    margin-top: 0;
+  }
+
+  .resident-app .phone-body > .resident-plan,
+  .resident-app .phone-body > .wizard,
+  .resident-app .phone-body > .task-list:only-child {
+    grid-column: 1 / -1;
+  }
+
+  .resident-app .phone-body > .task-list:only-child {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 0;
+  }
+
+  .resident-app .resident-plan {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .resident-app .resident-plan > .ai-resident-card {
+    grid-column: 1 / span 4;
+    margin-top: 0;
+  }
+
+  .resident-app .resident-plan > .care-path-card {
+    grid-column: 5 / -1;
+    margin-top: 0;
+  }
+
+  .resident-app .resident-plan > .family-design-card {
+    grid-column: 1 / -1;
+    margin-top: 0;
+  }
+
+  .resident-app .family-design-metrics,
+  .resident-app .dimension-grid.all-dimensions {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 861px) and (max-width: 1080px) {
+  .resident-app .resident-wrap {
+    width: min(100% - 28px, 900px);
+  }
+
+  .resident-app .phone-body {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .resident-app .phone-body > .family-health-design-card,
+  .resident-app .phone-body > .care-path-card,
+  .resident-app .phone-body > .resident-plan,
+  .resident-app .phone-body > .wizard,
+  .resident-app .phone-body > .task-list:only-child {
+    grid-column: 1 / -1;
+  }
+
+  .resident-app .phone-body > .ai-resident-card,
+  .resident-app .phone-body > .task-list:not(:only-child) {
+    grid-column: auto;
+  }
+
+  .resident-app .resident-plan {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .resident-app .resident-plan > .ai-resident-card,
+  .resident-app .resident-plan > .care-path-card,
+  .resident-app .resident-plan > .family-design-card {
+    grid-column: 1 / -1;
+  }
+
+  .resident-app .dimension-grid.all-dimensions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .resident-app .resident-wrap {
+    grid-template-columns: minmax(0, 1fr);
+    width: auto;
+    max-width: none;
+    padding: 12px 12px 14px;
+  }
+
+  .resident-app .phone {
+    width: 100%;
+    max-width: none;
+    justify-self: stretch;
+  }
+
+  .resident-app .phone-body {
+    display: block;
+    overflow-y: auto;
+  }
+
+  .resident-app .app-footer {
+    width: calc(100% - 24px);
+    margin: 8px 12px 12px;
+  }
+}
