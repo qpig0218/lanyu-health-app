@@ -717,12 +717,8 @@ function appFooter() {
     <footer class="app-footer" aria-label="版權資訊">
       <div class="footer-brand">
         <img class="footer-logo" src="./assets/the-one-ai-logo.png" alt="The One AITech 本一科技 Logo" />
-        <div>
-          <strong>The One AITech 本一科技</strong>
-          <span>Copyright © 2026 The One AITech 本一科技 版權所有</span>
-        </div>
+        <span>Copyright © 2026 The One AITech 本一科技 版權所有</span>
       </div>
-      <div class="footer-note">Ayoi蘭嶼健康行動APP 原型</div>
     </footer>
   `;
 }
