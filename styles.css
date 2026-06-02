@@ -105,7 +105,7 @@ button {
   height: 44px;
   object-fit: contain;
   flex: 0 0 auto;
-  padding: 4px;
+  padding: 0;
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 14px;
@@ -5122,10 +5122,6 @@ body::after {
   color: #fff;
 }
 
-.clinical-resident-entry {
-  margin-top: 8px;
-}
-
 .clinical-dashboard,
 .clinical-workspace {
   display: grid;
@@ -5238,19 +5234,11 @@ body::after {
   margin: 0;
 }
 
-.dashboard-main-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
-  gap: 16px;
-  align-items: start;
-}
-
-.dashboard-main-grid .lanyu-map-panel,
 .today-work-panel {
   min-width: 0;
 }
 
-.dashboard-main-grid .lanyu-map {
+.clinical-dashboard > .lanyu-map-panel .lanyu-map {
   min-height: 390px;
 }
 
@@ -5259,6 +5247,10 @@ body::after {
   display: grid;
   gap: 10px;
   padding: 14px;
+}
+
+.today-work-panel .today-work-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .today-work-item,
@@ -5423,12 +5415,12 @@ body::after {
 }
 
 @media (max-width: 1080px) {
-  .dashboard-main-grid {
-    grid-template-columns: minmax(0, 1fr);
+  .clinical-dashboard > .lanyu-map-panel .lanyu-map {
+    min-height: 360px;
   }
 
-  .dashboard-main-grid .lanyu-map {
-    min-height: 360px;
+  .today-work-panel .today-work-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .clinical-workspace-grid {
@@ -5471,7 +5463,7 @@ body::after {
     top: auto;
     z-index: 45;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 4px;
     padding: 6px;
     background: rgba(255, 255, 255, 0.22);
@@ -5493,10 +5485,6 @@ body::after {
     display: block;
   }
 
-  .clinical-resident-entry {
-    margin-top: 0;
-  }
-
   .dashboard-hero,
   .workspace-context-bar {
     display: grid;
@@ -5505,6 +5493,10 @@ body::after {
   .dashboard-hero-metrics {
     min-width: 0;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .today-work-panel .today-work-list {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .clinical-workspace-grid {

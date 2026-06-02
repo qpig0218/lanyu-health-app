@@ -662,7 +662,7 @@ function topbar() {
       <div class="brand brand-centered">
         <img class="company-logo" src="./assets/the-one-ai-logo.png" alt="The One AITech 本一科技 Logo" />
         <div>
-          <h1 class="brand-title">Ayoi蘭嶼健康行動❤️護理健康到您家APP</h1>
+          <h1 class="brand-title">Ayoi 蘭嶼健康行動APP</h1>
           <p class="brand-subtitle">The One AITech 本一科技｜家戶圖譜、全齡健檢、檢驗值與家庭健康設計模組</p>
         </div>
       </div>
@@ -756,7 +756,6 @@ function renderClinical() {
       <nav class="rail clinical-primary-rail" aria-label="醫護端主選單">
         ${clinicalViewButton("dashboard", "home", "儀表板")}
         ${clinicalViewButton("workspace", "clipboard", "工作區")}
-        <button class="clinical-resident-entry" title="民眾端" onclick="setRole('resident')">${icon("users")}<span>民眾端</span></button>
       </nav>
       <section class="clinical-stage">
         ${state.clinicalView === "dashboard" ? renderClinicalDashboard(patient) : renderClinicalWorkspace(patient)}
@@ -776,10 +775,8 @@ function renderClinicalDashboard(patient) {
       <section class="dashboard-stat-strip" aria-label="各項統計卡片">
         ${renderStats()}
       </section>
-      <section class="dashboard-main-grid">
-        ${lanyuVillageMap()}
-        ${renderTodayWorklist()}
-      </section>
+      ${renderTodayWorklist()}
+      ${lanyuVillageMap()}
       ${renderDashboardAiBrief(patient)}
     </section>
   `;
