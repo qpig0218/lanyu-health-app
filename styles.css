@@ -5840,7 +5840,7 @@ body::after {
   justify-self: center;
   gap: 16px;
   width: min(100%, 520px);
-  opacity: 0.5;
+  opacity: 1;
 }
 
 .login-panel-head {
