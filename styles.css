@@ -4888,7 +4888,7 @@ html {
 body {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(222, 247, 251, 0.10) 46%, rgba(84, 168, 205, 0.16) 100%),
-    url("./assets/lanyu_app_background_desktop_16x9.png") center center / cover fixed no-repeat,
+    url("./assets/lanyu_app_background_desktop_16x9_less_white.png") center center / cover fixed no-repeat,
     #dff3f7;
 }
 
@@ -5074,7 +5074,7 @@ body::after {
   body {
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(224, 248, 251, 0.08) 44%, rgba(41, 132, 184, 0.12) 100%),
-      url("./assets/lanyu_app_background_mobile_9x16.png") center center / cover scroll no-repeat,
+      url("./assets/lanyu_app_background_mobile_9x16_less_white.png") center center / cover scroll no-repeat,
       #dff3f7;
   }
 
