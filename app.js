@@ -7,11 +7,18 @@ const agePackages = [
     modules: ["兒童預防保健", "早療轉介"],
   },
   {
-    band: "1-6 歲",
-    trigger: (age) => age >= 1 && age <= 6,
-    core: ["身高體重與生長曲線", "發展里程碑", "視力/聽力", "口腔與塗氟", "營養與睡眠", "安全與事故預防", "疫苗盤點"],
-    labs: ["依貧血、鉛暴露、營養或慢病風險加做"],
-    modules: ["兒童預防保健", "早療/牙科轉介"],
+    band: "1-2 歲",
+    trigger: (age) => age >= 1 && age <= 2,
+    core: ["身高體重與生長曲線", "發展里程碑", "視力/聽力觀察", "口腔與塗氟", "營養與睡眠", "居家安全", "疫苗盤點"],
+    labs: ["依貧血、鉛暴露、營養或發展風險加做"],
+    modules: ["幼兒預防保健", "早療/牙科轉介"],
+  },
+  {
+    band: "3-6 歲",
+    trigger: (age) => age >= 3 && age <= 6,
+    core: ["身高體重與生長曲線", "發展/語言/社會互動", "視力/聽力", "口腔與塗氟", "營養與睡眠", "安全與事故預防", "疫苗盤點"],
+    labs: ["依肥胖、貧血、鉛暴露、營養或家族史加做"],
+    modules: ["學齡前預防保健", "早療/牙科/視力轉介"],
   },
   {
     band: "7-12 歲",
@@ -806,7 +813,6 @@ function renderClinicalDashboard(patient) {
       ${renderTodayWorklist()}
       ${lanyuVillageMap()}
       ${renderClinicalSupportModules(patient)}
-      ${renderDashboardAiBrief(patient)}
     </section>
   `;
 }
@@ -841,6 +847,7 @@ function renderClinicalWorkspace(patient) {
           <button class="btn" onclick='aiToast("AI產生家訪摘要", ${jsArg(patient.id)})'>${icon("clipboard")}AI摘要</button>
         </div>
       </div>
+      ${renderWorkspaceAiBrief(patient)}
       <section class="clinical-workspace-grid">
         ${renderQueue()}
         <section class="workspace-center" aria-label="個案資訊">
@@ -939,13 +946,14 @@ function renderTodayWorklist() {
   `;
 }
 
-function renderDashboardAiBrief(patient) {
+function renderWorkspaceAiBrief(patient) {
   const signals = aiSignalsFor(patient);
   return `
-    <section class="dashboard-ai-brief">
+    <section class="dashboard-ai-brief workspace-ai-brief">
       <div>
         <span class="ai-kicker">AI健康助理</span>
-        <h3>儀表板只做判讀與分派，文書到工作區完成</h3>
+        <h3>把個案動態、文書草稿與 SMART 建議集中在工作區</h3>
+        <p>依目前選取個案自動整理異常訊號，護理師可直接生成摘要、追蹤任務與居民可讀說明。</p>
       </div>
       <div class="dashboard-ai-grid">
         ${signals.map(([title, detail]) => `
@@ -1350,7 +1358,7 @@ function renderCheckup(patient) {
       </div>
       <div class="info-block">
         <h3>分齡原則</h3>
-        <p class="minor">0-18 歲不套成人抽血包；30 歲以上接成人預防保健；55 歲以上原住民每年評估；75 歲以上癌篩個別化。</p>
+        <p class="minor">0-6 歲依兒童預防保健與發展風險分層；7-18 歲以學齡/青少年健康為主；30 歲以上接成人預防保健；55 歲以上原住民每年評估；75 歲以上癌篩與抽血項目個別化。</p>
       </div>
       <div class="check-block">
         <h3>核心檢查</h3>

@@ -5310,6 +5310,24 @@ body::after {
   align-items: stretch;
 }
 
+.workspace-ai-brief {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+  align-items: stretch;
+}
+
+.workspace-ai-brief p {
+  max-width: 48em;
+  margin: 0;
+  color: rgba(41, 75, 96, 0.72);
+  font-size: 13px;
+  line-height: 1.48;
+}
+
+.workspace-ai-brief .dashboard-ai-grid {
+  min-width: 0;
+}
+
 .dashboard-ai-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -5406,6 +5424,10 @@ body::after {
 
   .dashboard-ai-brief {
     display: grid;
+  }
+
+  .workspace-ai-brief {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .dashboard-ai-grid {
