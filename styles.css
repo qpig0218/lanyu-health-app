@@ -6158,7 +6158,7 @@ body::after {
   }
 
   .app-topbar-auth {
-    grid-template-columns: 46px minmax(0, 1fr) 46px;
+    grid-template-columns: 84px minmax(0, 1fr) 84px;
     gap: 8px;
     min-height: 62px;
   }
@@ -6210,14 +6210,14 @@ body::after {
   }
 
   .auth-actions .btn {
-    min-width: 42px;
-    width: 42px;
-    padding: 0;
+    min-width: 72px;
+    width: auto;
+    padding: 0 10px;
     overflow: hidden;
   }
 
   .auth-actions .btn .icon {
-    margin: 0;
+    margin: 0 4px 0 0;
   }
 }
 
