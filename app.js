@@ -288,6 +288,7 @@ const state = {
   residentTab: "home",
   residentStep: 0,
   aiDraft: null,
+  modulePicker: null,
   toast: "",
 };
 
@@ -309,6 +310,16 @@ function jsArg(value) {
 
 function selectedPatient() {
   return patients.find((p) => p.id === state.selectedId) || patients[0];
+}
+
+function moduleByCode(code) {
+  return householdModules.find(([moduleCode]) => moduleCode === code);
+}
+
+function friendlyHouseholdTag(tag) {
+  const code = tag.match(/^H\d+/)?.[0];
+  const module = code ? moduleByCode(code) : null;
+  return module ? module[1] : tag.replace(/^H\d+\s*/, "");
 }
 
 function patientSignalText(patient) {
@@ -556,6 +567,7 @@ function logout() {
   state.sessionRole = null;
   state.loginRole = currentRole;
   state.aiDraft = null;
+  state.modulePicker = null;
   const nextUrl = new URL(window.location.href);
   nextUrl.hash = "";
   window.history.replaceState(null, "", `${nextUrl.pathname}${nextUrl.search}`);
@@ -570,6 +582,22 @@ function closeAiDraft() {
 function applyAiDraft() {
   if (!state.aiDraft) return;
   showToast(`${state.aiDraft.title.replace(" Mock", "")} 已套用到工作區草稿`);
+}
+
+function openModulePicker(context = "family") {
+  state.modulePicker = context;
+  render();
+}
+
+function closeModulePicker() {
+  state.modulePicker = null;
+  render();
+}
+
+function selectHouseholdModule(code) {
+  const module = moduleByCode(code);
+  state.modulePicker = null;
+  showToast(module ? `${module[1]} 已加入家庭健康設計草稿` : "已更新家庭健康設計草稿");
 }
 
 function setRole(role) {
@@ -658,6 +686,7 @@ function topbar() {
             <small>${profile.role}</small>
           </span>
         </button>
+        <button class="account-logout" onclick="logout()" title="登出" aria-label="登出">${icon("arrow")}<span>登出</span></button>
       </div>
       <div class="brand brand-centered">
         <img class="company-logo" src="./assets/the-one-ai-logo.png" alt="The One AITech 本一科技 Logo" />
@@ -670,7 +699,6 @@ function topbar() {
         <span class="role-scope-pill">${icon("shield")}${profile.badge}</span>
         ${state.sessionRole === "clinical" && state.role === "resident" ? `<button class="ghost-btn" onclick="setRole('clinical')">${icon("lab")}回醫護</button>` : ""}
         <button class="ghost-btn" onclick="showToast('已建立離線草稿，回到有網路時同步')">${icon("shield")}離線模式</button>
-        <button class="ghost-btn" onclick="logout()">${icon("arrow")}切換身份</button>
         <button class="btn" onclick="showToast('本原型已模擬儲存')">${icon("check")}儲存</button>
       </div>
     </header>
@@ -777,7 +805,24 @@ function renderClinicalDashboard(patient) {
       </section>
       ${renderTodayWorklist()}
       ${lanyuVillageMap()}
+      ${renderClinicalSupportModules(patient)}
       ${renderDashboardAiBrief(patient)}
+    </section>
+  `;
+}
+
+function renderClinicalSupportModules(patient) {
+  return `
+    <section class="clinical-support-modules" aria-label="照護支援模組">
+      <section class="support-hub-head clinical-support-head">
+        <span class="ai-kicker">照護支援模組</span>
+        <h2>家庭健康設計與轉介責任鏈</h2>
+        <p>這些是照護團隊用來設計一戶一視圖、追蹤責任與服務銜接的工作模組，不放在民眾端。</p>
+      </section>
+      <div class="clinical-support-grid">
+        ${residentProtocolDashboard()}
+        ${residentReferralChain()}
+      </div>
     </section>
   `;
 }
@@ -865,7 +910,7 @@ function renderTodayWorklist() {
     },
     {
       title: "家庭健康設計分流",
-      detail: "H2/H3/H8 模組需轉成 SMART 任務",
+      detail: "慢病穩定、肺健康與到檢協助需轉成 SMART 任務",
       meta: "分流",
       icon: "alert",
       tab: "triage",
@@ -925,7 +970,7 @@ function renderWorkspaceFillPanel(patient) {
     ["家訪問卷", patient.questionnaire.householdGoal ? "已填核心欄位" : "待填", "questionnaire", "clipboard"],
     ["分齡健檢", `${packageForAge(patient.age).band} 待確認`, "checkup", "calendar"],
     ["檢驗值", `${abnormalLabs} 異常 / ${pendingLabs} 待補`, "labs", "lab"],
-    ["家庭模組", patient.householdTags.join("、"), "triage", "users"],
+    ["家庭健康設計", patient.householdTags.map(friendlyHouseholdTag).join("、"), "triage", "users"],
   ];
 
   return `
@@ -1122,7 +1167,7 @@ function renderOverview(patient) {
           ${schemaCard("個資", piiFields[0].concat(piiFields[1]))}
           ${schemaCard("家戶", ["家戶編號", "成員 roster", "照顧者", "交通可近性", "居住安全", "家庭健康目標"])}
           ${schemaCard("健檢/檢驗", ["年齡層方案", "檢查項目", "檢驗值", "正常範圍", "異常旗標", "報告日期"])}
-          ${schemaCard("照護", ["P0-P9 個人分流", "H1-H10 家庭模組", "追蹤期限", "轉介去向", "完成狀態"])}
+          ${schemaCard("照護", ["個人分流項目", "家庭健康設計", "追蹤期限", "轉介去向", "完成狀態"])}
         </div>
       </div>
     </div>
@@ -1463,16 +1508,18 @@ function renderTriage(patient) {
       </div>
       <div class="check-block">
         <h3>家庭健康設計模組</h3>
-        <div class="check-list">${patient.householdTags.map((tag) => checkItem(tag, "啟用")).join("")}</div>
+        <div class="check-list">${patient.householdTags.map((tag) => checkItem(friendlyHouseholdTag(tag), "啟用")).join("")}</div>
       </div>
-      <div class="field-block wide">
-        <h3>模組庫 H1-H10</h3>
-        <div class="table-scroll">
-          <table class="module-table">
-            <thead><tr><th>模組</th><th>名稱</th><th>設計重點</th></tr></thead>
-            <tbody>${householdModules.map((m) => `<tr><td class="num">${m[0]}</td><td>${m[1]}</td><td>${m[2]}</td></tr>`).join("")}</tbody>
-          </table>
+      <div class="field-block wide module-picker-card">
+        <div>
+          <span class="ai-kicker">家庭健康設計</span>
+          <h3>用情境選擇照護模組</h3>
+          <p>不要讓護理師在頁面上讀代碼表；需要分流時打開選擇器，看名稱、適用情境與設計重點。</p>
         </div>
+        <div class="selected-module-pills">
+          ${patient.householdTags.map((tag) => `<span>${friendlyHouseholdTag(tag)}</span>`).join("")}
+        </div>
+        <button class="btn" onclick="openModulePicker('triage')">${icon("users")}選擇家庭健康設計</button>
       </div>
     </div>
   `;
@@ -1557,25 +1604,7 @@ function renderResident() {
           ${residentNav("results", "lab", "結果")}
         </nav>
       </section>
-      ${renderResidentSide()}
     </main>
-  `;
-}
-
-function renderResidentSide() {
-  return `
-    <aside class="resident-side resident-support-hub">
-      <section class="support-hub-head">
-        <span class="ai-kicker">照護支援模組</span>
-        <h2>家庭設計、部落服務與轉介責任鏈</h2>
-        <p>P08、六部落地圖與轉介流程屬於照護團隊的決策支援，放在民眾手機視圖旁邊，作為一戶一視圖的背景工作台。</p>
-      </section>
-      <div class="resident-support-grid">
-        ${residentProtocolDashboard()}
-        ${lanyuVillageMap()}
-      </div>
-      ${residentReferralChain()}
-    </aside>
   `;
 }
 
@@ -1593,12 +1622,25 @@ function renderResidentBody() {
 
 function residentHome() {
   return `
-    <div class="family-card family-command-card">
+    ${residentFamilyHealthCard()}
+    ${residentAiAssistantCard()}
+    <div class="task-list">
+      ${residentTask("填家訪問卷", "還差生活習慣與交通協助", "12 分鐘", "clipboard")}
+      ${residentTask("預約健檢", "6/18 上午還有名額", "可預約", "calendar")}
+      ${residentTask("查看結果", "爸爸血糖需追蹤", "需回覆", "lab")}
+    </div>
+    ${residentHealthPathPreview()}
+  `;
+}
+
+function residentFamilyHealthCard() {
+  return `
+    <div class="family-card family-command-card family-health-design-card">
       <div class="family-hero-grid">
         <div>
-          <span class="family-eyebrow">一戶一視圖</span>
+          <span class="family-eyebrow">我的家庭健康</span>
           <h2>夏曼家</h2>
-          <p>慢病穩定 + 肺健康 + 到檢協助</p>
+          <p>慢病穩定、肺健康、健檢交通協助</p>
         </div>
         <div class="family-score-dial" aria-label="家戶資料完成度 68%">
           <div class="family-score-core">
@@ -1612,18 +1654,20 @@ function residentHome() {
         ${residentMember("媽", "L2", "用藥穩定")}
         ${residentMember("女", "L1", "家屬協助")}
       </div>
+      <div class="family-design-panel">
+        <div>
+          <span>家庭健康設計</span>
+          <strong>本季先完成全家健檢、血糖追蹤與到檢協助</strong>
+        </div>
+        <div class="family-design-metrics">
+          ${protocolDimensions.slice(0, 4).map(([label, detail, percent]) => `
+            <span><b>${label}</b><small>${detail}</small><i style="--pct:${percent}%"></i></span>
+          `).join("")}
+        </div>
+      </div>
       <div class="progress-bar"><span style="width:68%"></span></div>
-      <p class="minor" style="color:rgba(255,255,255,.76)">家戶資料完成 68%，系統會依七大維度補齊缺口。</p>
+      <p class="minor" style="color:rgba(255,255,255,.78)">護理師會依問卷與健檢結果更新家庭健康設計，家人只看需要一起完成的下一步。</p>
     </div>
-    ${residentProtocolSnapshot()}
-    ${residentAiAssistantCard()}
-    <div class="task-list">
-      ${residentTask("填家訪問卷", "還差生活習慣與交通協助", "12 分鐘", "clipboard")}
-      ${residentTask("預約健檢", "6/18 上午還有名額", "可預約", "calendar")}
-      ${residentTask("查看結果", "爸爸血糖需追蹤", "需回覆", "lab")}
-    </div>
-    ${residentHealthPathPreview()}
-    ${residentFamilyModulePreview()}
   `;
 }
 
@@ -1736,41 +1780,51 @@ function residentCarePlan() {
           ${residentTimeline("1", "先補完整問卷", "確認家族史、吸菸年數、交通協助", "今天", "done")}
           ${residentTimeline("2", "完成分齡健檢", "成人健檢、血糖血脂、肝腎功能與癌篩條件", "6/18", "active")}
           ${residentTimeline("3", "檢驗結果追蹤", "血糖偏高由護理師電話追蹤，必要時安排門診", "2 週內", "")}
-          ${residentTimeline("4", "家庭健康回饋", "一起更新慢病、肺健康、到檢協助模組", "1 個月", "")}
+          ${residentTimeline("4", "家庭健康回饋", "一起更新慢病、肺健康、到檢協助", "1 個月", "")}
         </div>
       </section>
-      <section class="resident-card module-preview-card">
-        <div class="resident-card-head">
-          <div>
-            <h3>家庭健康設計模組</h3>
-            <p>照護團隊會依家庭狀況啟用，不需要家人自己判斷醫療術語</p>
-          </div>
-        </div>
-        <div class="resident-module-list">
-          ${residentModule("H2", "慢病穩定", "血壓血糖、拿藥、飲食一起追蹤", 68)}
-          ${residentModule("H3", "肺健康", "LDCT 條件確認、戒菸支持", 44)}
-          ${residentModule("H8", "到檢協助", "交通、陪同、提醒與船班安排", 82)}
-          ${residentModule("H9", "環境健康溝通", "檢查結果、環境疑慮與風險說明", 25)}
-        </div>
-      </section>
-      <section class="resident-card protocol-snapshot-card">
-        <div class="resident-card-head">
-          <div>
-            <h3>七大維度補齊狀態</h3>
-            <p>讓護理師與家人看到還缺哪些資訊，不用重複問答</p>
-          </div>
-        </div>
-        <div class="dimension-grid all-dimensions">
-          ${protocolDimensions.map(([label, detail, percent]) => `
-            <div class="dimension-chip">
-              <strong>${label}</strong>
-              <span>${detail}</span>
-              <i><b style="width:${percent}%"></b></i>
-            </div>
-          `).join("")}
-        </div>
-      </section>
+      ${residentFamilyDesignPlan()}
     </div>
+  `;
+}
+
+function residentFamilyDesignPlan() {
+  const pillars = [
+    ["慢病追蹤", "爸爸晚餐後步行與血糖紀錄，由家人協助打卡。", 68],
+    ["肺健康", "補齊吸菸年數，健檢時確認 LDCT 條件。", 44],
+    ["到檢協助", "健檢前一天確認交通、陪同者與空腹提醒。", 82],
+  ];
+  return `
+    <section class="resident-card family-design-card">
+      <div class="resident-card-head">
+        <div>
+          <h3>家庭健康設計</h3>
+          <p>照護團隊已把家訪與健檢資料整理成家人可一起完成的照護安排。</p>
+        </div>
+        <span class="status-pill green">已啟用</span>
+      </div>
+      <div class="resident-module-list friendly-module-list">
+        ${pillars.map(([title, desc, percent]) => `
+          <div class="resident-module friendly-module">
+            <span class="module-code">${title.slice(0, 1)}</span>
+            <span class="module-copy">
+              <strong>${title}</strong>
+              <small>${desc}</small>
+              <span class="mini-meter"><span style="width:${percent}%"></span></span>
+            </span>
+          </div>
+        `).join("")}
+      </div>
+      <div class="dimension-grid all-dimensions">
+        ${protocolDimensions.map(([label, detail, percent]) => `
+          <div class="dimension-chip">
+            <strong>${label}</strong>
+            <span>${detail}</span>
+            <i><b style="width:${percent}%"></b></i>
+          </div>
+        `).join("")}
+      </div>
+    </section>
   `;
 }
 
@@ -2013,7 +2067,42 @@ function renderAiDraftDrawer() {
   `;
 }
 
+function renderModulePicker() {
+  if (!state.modulePicker) return "";
+  const activeCodes = selectedPatient().householdTags.map((tag) => tag.match(/^H\d+/)?.[0]).filter(Boolean);
+  return `
+    <div class="module-modal-backdrop" onclick="closeModulePicker()" role="presentation">
+      <section class="module-modal" onclick="event.stopPropagation()" role="dialog" aria-modal="true" aria-label="選擇家庭健康設計">
+        <div class="module-modal-head">
+          <div>
+            <span class="ai-kicker">家庭健康設計選擇器</span>
+            <h2>選擇要啟用的照護情境</h2>
+            <p>以名稱與任務情境挑選，系統會在後台保留模組代碼，現場不用讀代碼表。</p>
+          </div>
+          <button class="ghost-btn" onclick="closeModulePicker()">${icon("check")}關閉</button>
+        </div>
+        <div class="module-option-grid">
+          ${householdModules.map(([code, title, detail]) => {
+            const active = activeCodes.includes(code);
+            return `
+              <button class="module-option ${active ? "active" : ""}" onclick='selectHouseholdModule(${jsArg(code)})'>
+                <span class="module-option-code">${code}</span>
+                <span>
+                  <strong>${title}</strong>
+                  <small>${detail}</small>
+                </span>
+                <em>${active ? "已啟用" : "選擇"}</em>
+              </button>
+            `;
+          }).join("")}
+        </div>
+      </section>
+    </div>
+  `;
+}
+
 function render() {
+  app.className = `app ${!state.authenticated ? "landing-app" : state.role === "resident" ? "resident-app" : "clinical-app"}`;
   if (!state.authenticated) {
     app.innerHTML = `
       ${renderLanding()}
@@ -2027,6 +2116,7 @@ function render() {
     ${state.role === "clinical" ? renderClinical() : renderResident()}
     ${appFooter()}
     ${renderAiDraftDrawer()}
+    ${renderModulePicker()}
     ${state.toast ? `<div class="toast">${icon("check")}${state.toast}</div>` : ""}
   `;
 }
@@ -2045,6 +2135,9 @@ window.showToast = showToast;
 window.aiToast = aiToast;
 window.closeAiDraft = closeAiDraft;
 window.applyAiDraft = applyAiDraft;
+window.openModulePicker = openModulePicker;
+window.closeModulePicker = closeModulePicker;
+window.selectHouseholdModule = selectHouseholdModule;
 window.state = state;
 window.render = render;
 
