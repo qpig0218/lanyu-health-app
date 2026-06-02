@@ -702,19 +702,10 @@ function renderLanding() {
           <img class="landing-logo" src="./assets/the-one-ai-logo.png" alt="The One AITech 本一科技 Logo" />
           <div>
             <h1>Ayoi 蘭嶼健康行動APP</h1>
-            <p>The One AITech 本一科技｜全人健康照護與家庭健康設計模組</p>
+            <p>全人健康照護與家庭健康設計模組</p>
           </div>
         </div>
         <div class="landing-grid">
-          <section class="landing-copy">
-            <span class="ai-kicker">RBAC 登入入口</span>
-            <h2>依照身份進入正確的照護工作流</h2>
-            <p>醫療/護理端處理家訪、個案、健檢、檢驗與分流；民眾端只顯示家庭可共享的健康路徑、問卷、預約與結果。</p>
-            <div class="rbac-summary">
-              <div><strong>醫療/護理</strong><span>個案名冊、檢驗值、家訪紀錄、AI文書草稿、分流簽核</span></div>
-              <div><strong>民眾</strong><span>家庭健康路徑、問卷填寫、健檢預約、結果解釋、家戶共照</span></div>
-            </div>
-          </section>
           <section class="login-panel">
             <div class="login-panel-head">
               <div>
