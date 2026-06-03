@@ -7230,15 +7230,27 @@ body::after {
 }
 
 @media (max-width: 860px) {
+  .resident-app {
+    height: 100svh;
+    max-height: 100svh;
+    overflow: hidden;
+  }
+
   .resident-app .resident-wrap {
     width: min(calc(100% - clamp(18px, 5vw, 40px)), 720px);
     margin-inline: auto;
-    padding: clamp(12px, 2.4vw, 18px) 0 clamp(14px, 3vw, 22px);
+    align-self: stretch;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    padding: clamp(12px, 2.4vw, 18px) 0 0;
   }
 
   .resident-app .phone {
     width: 100%;
-    min-height: clamp(620px, calc(100svh - 112px), 860px);
+    height: 100%;
+    min-height: 0;
     border-radius: clamp(24px, 4.4vw, 34px);
   }
 
