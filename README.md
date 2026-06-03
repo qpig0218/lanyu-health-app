@@ -17,7 +17,7 @@ http://localhost:4173
 GitHub Pages：
 
 ```text
-https://qpig0218.github.io/lanyu-health-app/
+https://lanyu-health.theoneai.com.tw/
 ```
 
 ## 介面
