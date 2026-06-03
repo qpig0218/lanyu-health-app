@@ -7222,3 +7222,36 @@ body::after {
 .resident-app .family-health-design-card .member-pill {
   color: #102e43;
 }
+
+/* Resident viewport-fluid shell */
+.resident-app .resident-wrap {
+  width: min(calc(100% - clamp(24px, 4vw, 44px)), 1180px);
+  margin-inline: auto;
+}
+
+@media (max-width: 860px) {
+  .resident-app .resident-wrap {
+    width: min(calc(100% - clamp(18px, 5vw, 40px)), 720px);
+    margin-inline: auto;
+    padding: clamp(12px, 2.4vw, 18px) 0 clamp(14px, 3vw, 22px);
+  }
+
+  .resident-app .phone {
+    width: 100%;
+    min-height: clamp(620px, calc(100svh - 112px), 860px);
+    border-radius: clamp(24px, 4.4vw, 34px);
+  }
+
+  .resident-app .phone-top {
+    padding: clamp(18px, 3.6vw, 24px) clamp(18px, 4.5vw, 28px) clamp(10px, 2.2vw, 14px);
+  }
+
+  .resident-app .phone-body {
+    padding: clamp(10px, 2.6vw, 18px) clamp(14px, 4.5vw, 28px) clamp(16px, 3.4vw, 24px);
+  }
+
+  .resident-app .wizard h2,
+  .resident-app .family-health-design-card h2 {
+    font-size: clamp(24px, 4.8vw, 34px);
+  }
+}
