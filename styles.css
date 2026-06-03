@@ -6275,12 +6275,13 @@ body::after {
 .resident-app .resident-wrap {
   grid-template-columns: minmax(320px, 640px);
   justify-content: center;
-  padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  padding-bottom: calc(22px + env(safe-area-inset-bottom));
 }
 
 .resident-app .phone {
   width: min(100%, 640px);
   justify-self: center;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
 }
 
 .family-health-design-card {
@@ -6696,6 +6697,18 @@ body::after {
   margin: 0 auto 18px;
 }
 
+.resident-app .phone > .app-footer {
+  width: 100%;
+  margin: 0;
+  padding: 9px 16px 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.36);
+}
+
+.resident-app .phone > .app-footer .footer-brand {
+  justify-content: center;
+  color: rgba(6, 3, 17, 0.82);
+}
+
 .resident-app .family-health-design-card {
   position: relative;
   isolation: isolate;
@@ -7008,8 +7021,9 @@ body::after {
   }
 
   .resident-app .app-footer {
-    width: calc(100% - 24px);
-    margin: 8px 12px 12px;
+    width: 100%;
+    margin: 0;
+    padding: 8px 12px 9px;
   }
 }
 

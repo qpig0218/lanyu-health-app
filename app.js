@@ -1600,6 +1600,7 @@ function renderResident() {
           <span class="status-pill green">已同意</span>
         </div>
         <div class="phone-body">${renderResidentBody()}</div>
+        ${appFooter()}
         <nav class="bottom-nav">
           ${residentNav("home", "home", "首頁")}
           ${residentNav("plan", "users", "照護")}
@@ -2118,7 +2119,7 @@ function render() {
   app.innerHTML = `
     ${topbar()}
     ${state.role === "clinical" ? renderClinical() : renderResident()}
-    ${appFooter()}
+    ${state.role === "clinical" ? appFooter() : ""}
     ${renderAiDraftDrawer()}
     ${renderModulePicker()}
     ${state.toast ? `<div class="toast">${icon("check")}${state.toast}</div>` : ""}
