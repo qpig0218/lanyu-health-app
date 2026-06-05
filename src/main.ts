@@ -1,5 +1,4 @@
-// 暫接既有全站樣式；P6 將拆分為 src/styles/* 模組化並換膚。
-import '../styles.css';
+import './styles/index.css';
 import { mount } from './lib/dom.ts';
 import { store, getState } from './state/store.ts';
 import { appClassName, renderApp } from './app.ts';

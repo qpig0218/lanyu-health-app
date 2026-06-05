@@ -1,0 +1,40 @@
+/* =======================================================================
+   Design tokens（換膚槓桿）— Ayoi 蘭嶼健康 / HECC
+   全站色彩、字體、半徑、陰影、焦點環的單一事實來源。
+   保留原 token 名稱以相容既有 7,000+ 行樣式；精煉數值以提升對比與一致性。
+   ======================================================================= */
+:root {
+  /* ---- 中性 / 文字 ---- */
+  --basalt: #1b2327;
+  --ink: #1f2a30;
+  --muted: #5d6b71;
+  --line: rgba(31, 42, 48, 0.16);
+  --soft-line: rgba(31, 42, 48, 0.08);
+  --paper: #f6f8f7;
+  --panel: #ffffff;
+  --inset: #eef2f1;
+
+  /* ---- 品牌 / 強調（醫療治理藍綠）---- */
+  --sea: #0d7468;
+  --sea-deep: #0c5750;
+  --reef: #d2543b;
+  --sun: #d6961f;
+  --leaf: #418049;
+  --violet: #525da6;
+
+  /* ---- 語意狀態 ---- */
+  --danger: #b6362f;
+  --ok: #1c7a50;
+  --warning: #a4630f;
+
+  /* ---- 陰影 / 字體 ---- */
+  --shadow: 0 16px 38px rgba(27, 35, 39, 0.12);
+  --font-ui: "Avenir Next", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-num: "SF Mono", "Menlo", "Consolas", monospace;
+
+  /* ---- 新增：間距 / 半徑 / 焦點環（供 refinements 與 a11y 使用）---- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --focus-ring: 0 0 0 3px rgba(13, 116, 104, 0.32);
+}

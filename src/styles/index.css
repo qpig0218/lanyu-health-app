@@ -1,0 +1,10 @@
+/* =======================================================================
+   樣式進入點。匯入順序即層疊順序（cascade），務必維持：
+   tokens（換膚）→ base（重置/排版）→ legacy（chrome＋模組＋玻璃歷史層）
+   → extension（P11 型別化模組）→ refinements（最後精修）。
+   ======================================================================= */
+@import './tokens.css';
+@import './base.css';
+@import './legacy.css';
+@import './extension.css';
+@import './refinements.css';

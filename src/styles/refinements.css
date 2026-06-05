@@ -1,0 +1,70 @@
+/* =======================================================================
+   局部精修層（最後載入）— 不重寫既有選擇器，只做疊加式精修：
+   一致的鍵盤焦點環（a11y）、降低動態偏好、表格密度、chrome 收斂。
+   ======================================================================= */
+
+/* ---- 鍵盤可見焦點環（a11y：滑鼠點擊不顯示、Tab 導覽才顯示）---- */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--r-sm);
+}
+
+/* ---- 尊重使用者降低動態偏好 ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- 互動元件統一過場，提升質感 ---- */
+.btn,
+.ghost-btn,
+.stat,
+.agent-card,
+.account-chip,
+.today-work-item,
+.nuke-card,
+.map-pin {
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    background-color 0.16s ease,
+    border-color 0.16s ease;
+}
+
+/* ---- 卡片 hover 微抬升（僅可點擊卡片）---- */
+.stat:hover,
+.agent-card:hover,
+.today-work-item:hover {
+  transform: translateY(-1px);
+}
+
+/* ---- 寬表格滾動條收斂（細、低調）---- */
+.table-scroll::-webkit-scrollbar,
+.kb-scroll::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.table-scroll::-webkit-scrollbar-thumb,
+.kb-scroll::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 999px;
+}
+
+/* ---- Toast：置中下方、柔和進場 ---- */
+.toast {
+  border-radius: var(--r-md);
+}
+
+/* ---- 禁用狀態一致化 ---- */
+button:disabled,
+button[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
