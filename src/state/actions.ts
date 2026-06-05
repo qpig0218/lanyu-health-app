@@ -2,7 +2,9 @@ import type { AccessKey, RoleKind } from '../data/types.ts';
 import type { State } from './state.ts';
 import { patients } from '../data/patients.ts';
 import { agePackages } from '../data/age-packages.ts';
+import { accessLevels } from '../data/access-levels.ts';
 import { packageForAge, moduleByCode } from '../domain/risk.ts';
+import { currentLevel } from '../domain/rbac.ts';
 import { buildAiDraft } from '../domain/ai-draft.ts';
 import { appendAudit } from '../domain/audit.ts';
 import { withdrawConsent } from '../domain/consent.ts';
@@ -62,6 +64,31 @@ export function setRole(role: RoleKind): void {
   syncRoleToUrl(role);
 }
 
+/** 在登入面板選擇 RBAC 層級（尚未登入）。 */
+export function selectAccess(key: AccessKey): void {
+  const lv = accessLevels.find((l) => l.key === key);
+  if (!lv) return;
+  set({ accessKey: key, loginRole: lv.role });
+}
+
+/** 依目前選定的 access level 登入並設定預設導覽/儀表板視圖。 */
+export function loginWithAccess(): void {
+  const lv = currentLevel(get().accessKey);
+  const dashboardView = ({ L1: 'policy', L2: 'war', L3: 'station', L4: 'station' } as const)[
+    lv.key as 'L1' | 'L2' | 'L3' | 'L4'
+  ] ?? 'war';
+  set((s) => ({
+    authenticated: true,
+    sessionRole: lv.role,
+    role: lv.role,
+    loginRole: lv.role,
+    clinicalNav: lv.role === 'clinical' ? lv.nav : s.clinicalNav,
+    dashboardView,
+    aiDraft: null,
+  }));
+  syncRoleToUrl(lv.role);
+}
+
 // ---- 醫護端導覽 ----
 export function setClinicalNav(nav: string): void {
   set({ clinicalNav: nav, aiDraft: null });
@@ -111,6 +138,13 @@ export function setResidentTab(tab: string): void {
 export function setResidentStep(step: number): void {
   set({ residentStep: step });
 }
+export function prevResidentStep(): void {
+  set((s) => ({ residentStep: Math.max(0, s.residentStep - 1) }));
+}
+export function nextResidentStep(): void {
+  set((s) => ({ residentStep: Math.min(3, s.residentStep + 1) }));
+  showToast('問卷已暫存');
+}
 
 export function withdrawConsentAction(): void {
   const result = withdrawConsent();
@@ -118,6 +152,13 @@ export function withdrawConsentAction(): void {
 }
 
 // ---- 名冊 / 篩選 ----
+export function setQuery(value: string): void {
+  set({ query: value });
+}
+export function setSelectedId(id: string): void {
+  set({ selectedId: id });
+}
+
 export function setVillage(village: string): void {
   const s = get();
   const match = patients.find((p) => p.village === village);
