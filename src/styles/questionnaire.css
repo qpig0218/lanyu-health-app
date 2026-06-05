@@ -606,3 +606,114 @@
   width: 13px;
   height: 13px;
 }
+
+/* =======================================================================
+   響應式：平板（≤860）與手機（≤520）。
+   - 表單卡縮邊距、表頭改直排
+   - 頁籤改可橫向滑動（不換行），方便單手切換
+   - 互動晶片／表格自然降為單欄（grid auto-fill 已處理）
+   - 暫存列按鈕滿版、加大點擊區
+   ======================================================================= */
+@media (max-width: 860px) {
+  .q-table {
+    padding: 16px 14px;
+  }
+  .q-table-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .q-filler {
+    align-self: flex-start;
+  }
+  .q-table-head h2 {
+    font-size: 17px;
+  }
+
+  /* 頁籤：橫向可滑動，避免換行佔高 */
+  .q-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    margin-inline: -2px;
+    padding-inline: 2px;
+  }
+  .q-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .q-tab {
+    flex: none;
+    scroll-snap-align: start;
+  }
+
+  /* 互動晶片改單欄，加大觸控高度 */
+  .q-triage-grid,
+  .q-module-grid,
+  .q-risk-grid {
+    grid-template-columns: 1fr;
+  }
+  .q-triage,
+  .q-module,
+  .q-risk {
+    min-height: 56px;
+  }
+
+  /* 暫存列：按鈕滿版直排 */
+  .q-save-bar {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .q-save-bar .btn,
+  .q-save-bar .ghost-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 46px;
+  }
+
+  /* 簽核欄改直排 */
+  .q-signrow {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* E5 完成狀態按鈕加大觸控 */
+  .q-choice-btn {
+    min-height: 40px;
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 520px) {
+  .q-table {
+    padding: 14px 12px;
+    border-radius: var(--r-md);
+  }
+  .q-section > h3 {
+    font-size: 13.5px;
+  }
+  .q-table-head h2 {
+    font-size: 16px;
+  }
+  /* 選項換行間距加大，避免誤觸 */
+  .q-choices {
+    gap: 10px 14px;
+  }
+  .q-choice {
+    min-height: 28px;
+  }
+  /* 量表圓點均分排滿一列 */
+  .q-scale-track {
+    gap: 5px;
+  }
+  .q-scale-dot {
+    width: 28px;
+    height: 28px;
+  }
+  /* 矩陣表格保留橫向捲動提示 */
+  .q-grid-wrap,
+  .q-overview {
+    margin-inline: -12px;
+    padding-inline: 12px;
+  }
+}
