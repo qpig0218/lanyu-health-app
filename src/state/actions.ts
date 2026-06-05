@@ -9,6 +9,8 @@ import { buildAiDraft } from '../domain/ai-draft.ts';
 import { appendAudit } from '../domain/audit.ts';
 import { withdrawConsent } from '../domain/consent.ts';
 import { syncRoleToUrl } from '../lib/router.ts';
+import { t } from '../i18n/index.ts';
+import { zh } from '../i18n/zh.ts';
 import { store } from './store.ts';
 
 const set = (patch: Partial<State> | ((state: Readonly<State>) => Partial<State>)): void =>
@@ -164,7 +166,7 @@ export function setVillage(village: string): void {
   const match = patients.find((p) => p.village === village);
   const nextQuery = s.query === village ? '' : village;
   set({ query: nextQuery, ...(match && nextQuery ? { selectedId: match.id } : {}) });
-  showToast(nextQuery ? `已篩選 ${village}部落名冊` : '已清除部落篩選');
+  showToast(nextQuery ? t('roster.filtered', { village }) : t('roster.cleared'));
 }
 
 export function selectVisualPatient(id: string, tab: string = get().tab): void {
@@ -248,5 +250,6 @@ export function selectHouseholdModule(code: string): void {
 export function toggleLang(): void {
   const next = get().lang === 'tao' ? 'zh' : 'tao';
   set({ lang: next });
-  showToast(next === 'tao' ? '已切換達悟語（族語答覆須部落顧問審定）' : '已切換中文');
+  // 以 next 直接取字典，避免 microtask 去抖造成 t() 讀到舊 lang。
+  showToast(next === 'tao' ? zh['toast.lang.tao'] : zh['toast.lang.zh']);
 }

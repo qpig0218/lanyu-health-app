@@ -2,6 +2,7 @@ import { html, type SafeHtml } from '../lib/html.ts';
 import { icon } from '../lib/icon.ts';
 import { getState } from '../state/store.ts';
 import { currentLevel } from '../domain/rbac.ts';
+import { t } from '../i18n/index.ts';
 import { logout, setRole, showToast, toggleLang } from '../state/actions.ts';
 
 interface AccountProfile {
@@ -108,9 +109,9 @@ export function governanceBar(): SafeHtml {
         <button
           class="gov-pill ${state.lang === 'tao' ? 'active' : ''}"
           ${{ on: { click: () => toggleLang() } }}
-          title="中文 / 達悟語"
+          title="${t('lang.toggleTitle')}"
         >
-          ${icon('globe')}${state.lang === 'tao' ? '達悟語' : '中文'}
+          ${icon('globe')}${state.lang === 'tao' ? t('lang.tao') : t('lang.zh')}
         </button>
         <span class="gov-pill online" title="離島離線優先：可離線 7 天">${icon('shield')}離線就緒 7 天</span>
         <span class="gov-pill" title="共用 Metadata 字典版本">字典 v2.1@2026-05-15</span>

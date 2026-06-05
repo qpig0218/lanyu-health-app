@@ -6,6 +6,7 @@ import { consentTiers } from '../data/access-levels.ts';
 import { protocolDimensions } from '../data/household.ts';
 import { smartPlanFor } from '../domain/risk.ts';
 import { appFooter } from '../components/chrome.ts';
+import { t, isPending } from '../i18n/index.ts';
 import {
   nextResidentStep,
   prevResidentStep,
@@ -80,19 +81,21 @@ function residentTimeline(
 
 function residentConsentCard(): SafeHtml {
   const lang = getState().lang;
+  const bodyPending = isPending('consent.body');
   return html`
     <section class="resident-card consent-resident-card">
       <div class="resident-card-head">
         <div>
-          <h3>我的個資與同意</h3>
+          <h3>${t('consent.title')}</h3>
           <p>
-            ${lang === 'tao'
-              ? '〔達悟語・待部落顧問審定〕你的資料、你做主。'
-              : '你的資料、你做主。可隨時撤回，系統 24 小時內封存。'}
+            ${t('consent.body')}
+            ${bodyPending
+              ? html`<span class="tao-pending-badge">${icon('globe')}${t('badge.taoPending')}</span>`
+              : ''}
           </p>
         </div>
         <button class="gov-pill ${lang === 'tao' ? 'active' : ''}" ${{ on: { click: () => toggleLang() } }}>
-          ${icon('globe')}${lang === 'tao' ? '達悟語' : '中文'}
+          ${icon('globe')}${lang === 'tao' ? t('lang.tao') : t('lang.zh')}
         </button>
       </div>
       <div class="consent-mini">
@@ -103,14 +106,11 @@ function residentConsentCard(): SafeHtml {
         )}
       </div>
       <div class="action-list">
-        <button class="ghost-btn" ${{ on: { click: () => showToast('已開啟雙語同意書（達悟語待審定）') } }}>
-          ${icon('clipboard')}查看雙語同意書
+        <button class="ghost-btn" ${{ on: { click: () => showToast(t('consent.toast.bilingual')) } }}>
+          ${icon('clipboard')}${t('consent.bilingual')}
         </button>
-        <button
-          class="danger-btn"
-          ${{ on: { click: () => showToast('撤回已受理：24h 內封存，停止跨機構共享與研究，並通知駐點') } }}
-        >
-          ${icon('shield')}撤回同意
+        <button class="danger-btn" ${{ on: { click: () => showToast(t('consent.toast.withdraw')) } }}>
+          ${icon('shield')}${t('consent.withdraw')}
         </button>
       </div>
     </section>
@@ -382,11 +382,11 @@ export function renderResident(): SafeHtml {
   return html`
     <main class="resident-wrap">
       <nav class="resident-web-nav" aria-label="民眾端主選單">
-        ${residentNav('home', 'home', '首頁')}
-        ${residentNav('plan', 'users', '照護')}
-        ${residentNav('survey', 'clipboard', '問卷')}
-        ${residentNav('schedule', 'calendar', '預約')}
-        ${residentNav('results', 'lab', '結果')}
+        ${residentNav('home', 'home', t('nav.home'))}
+        ${residentNav('plan', 'users', t('nav.care'))}
+        ${residentNav('survey', 'clipboard', t('nav.survey'))}
+        ${residentNav('schedule', 'calendar', t('nav.schedule'))}
+        ${residentNav('results', 'lab', t('nav.results'))}
       </nav>
       <section class="phone">
         <div class="phone-top">
@@ -399,11 +399,11 @@ export function renderResident(): SafeHtml {
         <div class="phone-body">${renderResidentBody()}</div>
         ${appFooter()}
         <nav class="bottom-nav">
-          ${residentNav('home', 'home', '首頁')}
-          ${residentNav('plan', 'users', '照護')}
-          ${residentNav('survey', 'clipboard', '問卷')}
-          ${residentNav('schedule', 'calendar', '預約')}
-          ${residentNav('results', 'lab', '結果')}
+          ${residentNav('home', 'home', t('nav.home'))}
+          ${residentNav('plan', 'users', t('nav.care'))}
+          ${residentNav('survey', 'clipboard', t('nav.survey'))}
+          ${residentNav('schedule', 'calendar', t('nav.schedule'))}
+          ${residentNav('results', 'lab', t('nav.results'))}
         </nav>
       </section>
     </main>
