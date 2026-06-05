@@ -29,7 +29,7 @@ function accountProfile(): AccountProfile {
   }
   const lv = currentLevel(state.accessKey);
   const names: Record<string, string> = {
-    L1: '照護司 林司長',
+    L1: '照護司 蔡司長',
     L2: 'PMO 阿德主任',
     L3: '駐點 王主任',
     L4: 'FNP 阿德護理師',
