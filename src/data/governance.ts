@@ -42,6 +42,7 @@ export const clinicalNavItems: readonly (readonly [string, string, string, strin
   ['mpi', 'users', '居民主索引', '模組一'],
   ['track', 'alert', '追蹤閉環', '模組二'],
   ['workspace', 'clipboard', '工作區', '個案'],
+  ['visit', 'clipboard', '家訪問卷', '家庭評估'],
   ['pmo', 'calendar', 'PMO 治理', '模組三'],
   ['knowledge', 'book', '知識問答', '模組五'],
   ['agents', 'robot', 'AI Agent', '八大'],

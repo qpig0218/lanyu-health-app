@@ -1,0 +1,608 @@
+/* =======================================================================
+   家訪問卷（家庭全人照護評估版）模組樣式
+   表單版面、頁籤、grid 表格、E 表互動晶片、紅旗 banner、分工卡。
+   ======================================================================= */
+
+.questionnaire-stage .role-scope-pill {
+  white-space: nowrap;
+}
+
+/* ---- 紅旗症狀 banner ---- */
+.q-redflag {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin: 14px 0;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--danger) 9%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--danger) 32%, transparent);
+  color: var(--danger);
+}
+.q-redflag svg {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+.q-redflag strong {
+  display: block;
+  font-size: 14px;
+}
+.q-redflag span {
+  font-size: 12.5px;
+  color: color-mix(in srgb, var(--danger) 80%, var(--ink));
+}
+
+/* ---- 填寫原則折疊 ---- */
+.q-principles {
+  margin: 8px 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--panel);
+  padding: 10px 16px;
+}
+.q-principles summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--sea-deep);
+}
+.q-principles ol {
+  margin: 10px 0 4px;
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+/* ---- 表單總覽 ---- */
+.q-overview {
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+/* ---- 頁籤 ---- */
+.q-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 18px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+.q-tab {
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+.q-tab.active {
+  background: var(--sea);
+  border-color: var(--sea);
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+
+/* ---- 表單卡 ---- */
+.q-table {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 20px 22px;
+}
+.q-table-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--inset);
+}
+.q-table-code {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--sea);
+  letter-spacing: 0.04em;
+}
+.q-table-head h2 {
+  margin: 2px 0 0;
+  font-size: 19px;
+  color: var(--ink);
+}
+.q-filler {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--inset);
+  padding: 5px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.q-filler svg {
+  width: 14px;
+  height: 14px;
+}
+.q-table-intro,
+.q-section-intro {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0 0 12px;
+}
+
+/* ---- 區段 ---- */
+.q-section {
+  padding: 14px 0;
+  border-top: 1px solid var(--soft-line);
+}
+.q-section:first-of-type {
+  border-top: none;
+}
+.q-section > h3 {
+  font-size: 14.5px;
+  color: var(--sea-deep);
+  margin: 0 0 12px;
+}
+.q-items {
+  display: grid;
+  gap: 14px;
+}
+
+/* ---- 題項 ---- */
+.q-item > label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 7px;
+}
+.q-fill {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.q-fill > label {
+  margin-bottom: 0;
+  font-weight: 500;
+}
+.q-line {
+  flex: 1;
+  min-width: 120px;
+  border-bottom: 1px dashed var(--line);
+  height: 18px;
+}
+.q-note .q-textarea {
+  height: 46px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--inset);
+}
+
+/* ---- 選項 ---- */
+.q-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+.q-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--ink);
+}
+.q-box {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--muted);
+  display: inline-block;
+  flex: none;
+}
+.q-box.radio {
+  border-radius: 50%;
+}
+.q-box.checkbox {
+  border-radius: 3px;
+}
+
+/* ---- 評估結果列 ---- */
+.q-result {
+  background: color-mix(in srgb, var(--sea) 6%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--sea) 24%, transparent);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+}
+.q-result > label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--sea-deep);
+}
+.q-result > label svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ---- 量表 ---- */
+.q-scale-track {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.q-scale-dot {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+/* ---- 矩陣 / 表格 ---- */
+.q-grid-wrap {
+  overflow-x: auto;
+}
+.q-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.q-grid th,
+.q-grid td {
+  border: 1px solid var(--line);
+  padding: 7px 10px;
+  text-align: center;
+}
+.q-grid thead th {
+  background: var(--inset);
+  color: var(--ink);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.q-grid-row {
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--inset) 50%, var(--panel));
+}
+.q-grid-cell .q-box {
+  margin: 0 auto;
+}
+.q-blank {
+  height: 30px;
+  background: var(--panel);
+}
+.q-fill-table td.q-blank {
+  min-width: 90px;
+}
+.q-foot {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+
+/* ---- E1 分流標籤 ---- */
+.q-triage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 10px;
+}
+.q-triage {
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--panel);
+  padding: 11px 13px;
+  cursor: pointer;
+  display: grid;
+  gap: 4px;
+}
+.q-triage:hover {
+  border-color: var(--sea);
+}
+.q-triage.on {
+  background: color-mix(in srgb, var(--sea) 10%, var(--panel));
+  border-color: var(--sea);
+  box-shadow: var(--focus-ring);
+}
+.q-triage.urgent.on {
+  background: color-mix(in srgb, var(--danger) 10%, var(--panel));
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 30%, transparent);
+}
+.q-triage-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.q-triage-top strong {
+  background: var(--ink);
+  color: #fff;
+  border-radius: var(--r-sm);
+  padding: 1px 8px;
+  font-size: 12px;
+}
+.q-triage.urgent .q-triage-top strong {
+  background: var(--danger);
+}
+.q-triage-cond {
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.q-triage-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--sea-deep);
+  font-size: 11.5px;
+}
+.q-triage-action svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ---- E2 風險分級 ---- */
+.q-risk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.q-risk {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--panel);
+  padding: 12px;
+  cursor: pointer;
+}
+.q-risk-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex: none;
+  margin-top: 3px;
+}
+.q-risk.lv-red .q-risk-dot {
+  background: var(--danger);
+}
+.q-risk.lv-orange .q-risk-dot {
+  background: var(--sun);
+}
+.q-risk.lv-yellow .q-risk-dot {
+  background: #c9a227;
+}
+.q-risk.lv-green .q-risk-dot {
+  background: var(--leaf);
+}
+.q-risk-copy {
+  display: grid;
+  gap: 3px;
+}
+.q-risk-copy strong {
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.q-risk-copy small {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.q-risk-copy em {
+  font-style: normal;
+  font-size: 11.5px;
+  color: var(--sea-deep);
+}
+.q-risk.on {
+  box-shadow: var(--focus-ring);
+}
+.q-risk.lv-red.on {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 8%, var(--panel));
+}
+.q-risk.lv-orange.on {
+  border-color: var(--sun);
+  background: color-mix(in srgb, var(--sun) 10%, var(--panel));
+}
+.q-risk.lv-yellow.on {
+  border-color: #c9a227;
+  background: color-mix(in srgb, #c9a227 10%, var(--panel));
+}
+.q-risk.lv-green.on {
+  border-color: var(--leaf);
+  background: color-mix(in srgb, var(--leaf) 10%, var(--panel));
+}
+
+/* ---- E3 模組 ---- */
+.q-module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 10px;
+}
+.q-module {
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--panel);
+  padding: 11px 13px;
+  cursor: pointer;
+  display: grid;
+  gap: 5px;
+  position: relative;
+}
+.q-module:hover {
+  border-color: var(--violet);
+}
+.q-module.on {
+  background: color-mix(in srgb, var(--violet) 9%, var(--panel));
+  border-color: var(--violet);
+}
+.q-module-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.q-module-top strong {
+  background: var(--violet);
+  color: #fff;
+  border-radius: var(--r-sm);
+  padding: 1px 8px;
+  font-size: 12px;
+}
+.q-module small {
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.q-module-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.q-module.on .q-module-flag {
+  color: var(--violet);
+}
+.q-module-flag svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ---- E4 行動表 ---- */
+.q-status-cell {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.q-mini {
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+/* ---- E5 完成狀態按鈕 ---- */
+.q-choice-btn {
+  font-size: 12.5px;
+  padding: 5px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+}
+.q-choice-btn.on {
+  background: var(--sea);
+  border-color: var(--sea);
+  color: #fff;
+}
+.q-signrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---- 暫存列 ---- */
+.q-save-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+/* ---- 附錄分工卡 ---- */
+.q-role-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.q-role-card {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 14px;
+  background: var(--panel);
+}
+.q-role-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  color: var(--sea-deep);
+  margin: 0 0 10px;
+}
+.q-role-card h3 svg {
+  width: 16px;
+  height: 16px;
+}
+.q-role-row {
+  display: grid;
+  gap: 3px;
+  padding: 8px 0;
+  border-top: 1px solid var(--soft-line);
+}
+.q-role-row strong {
+  font-size: 12px;
+}
+.q-role-row span {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.q-can strong {
+  color: var(--ok);
+}
+.q-cant strong {
+  color: var(--danger);
+}
+.q-qc strong {
+  color: var(--sea);
+}
+.q-refs {
+  margin: 0;
+  padding-left: 4px;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.q-refs li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.q-refs svg {
+  width: 13px;
+  height: 13px;
+}

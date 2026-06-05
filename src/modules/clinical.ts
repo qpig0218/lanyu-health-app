@@ -7,6 +7,7 @@ import { selectedPatient, setClinicalNav } from '../state/actions.ts';
 import { renderMpiModule } from './mpi.ts';
 import { renderTrackModule } from './track.ts';
 import { renderClinicalWorkspace } from './workspace.ts';
+import { renderQuestionnaireModule } from './questionnaire.ts';
 import { renderPmoModule } from './pmo.ts';
 import { renderKnowledgeModule } from './knowledge.ts';
 import { renderAgentsModule } from './agents.ts';
@@ -40,6 +41,8 @@ function renderClinicalStage(patient: Patient): SafeHtml {
       return renderTrackModule(patient);
     case 'workspace':
       return renderClinicalWorkspace(patient);
+    case 'visit':
+      return renderQuestionnaireModule();
     case 'pmo':
       return renderPmoModule();
     case 'knowledge':

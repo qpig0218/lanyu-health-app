@@ -46,6 +46,18 @@ export interface State {
   aiDraft: AiDraft | null;
   modulePicker: string | null;
   toast: string;
+  /** 家訪問卷：目前表單頁籤（A/B/C/D/E/appendix）。 */
+  qTable: string;
+  /** 家訪問卷 E 表互動草稿（分流標籤、家戶風險、家庭模組、結案狀態）。 */
+  qDraft: QuestionnaireDraft;
+}
+
+/** E 表可暫存的關鍵決策欄位。 */
+export interface QuestionnaireDraft {
+  triage: readonly string[];
+  risk: string;
+  modules: readonly string[];
+  status: string;
 }
 
 /** 由 ?role= 或 hash 解析初始角色。 */
@@ -82,5 +94,7 @@ export function createInitialState(): State {
     aiDraft: null,
     modulePicker: null,
     toast: '',
+    qTable: 'A',
+    qDraft: { triage: [], risk: '', modules: [], status: '' },
   };
 }

@@ -153,6 +153,49 @@ export function withdrawConsentAction(): void {
   showToast(result.label);
 }
 
+// ---- 家訪問卷（A-E + 附錄） ----
+export function setQTable(table: string): void {
+  set({ qTable: table });
+}
+
+const toggleIn = (list: readonly string[], code: string): string[] =>
+  list.includes(code) ? list.filter((c) => c !== code) : [...list, code];
+
+export function toggleQTriage(code: string): void {
+  set((s) => ({ qDraft: { ...s.qDraft, triage: toggleIn(s.qDraft.triage, code) } }));
+}
+
+export function setQRisk(level: string): void {
+  set((s) => ({ qDraft: { ...s.qDraft, risk: s.qDraft.risk === level ? '' : level } }));
+}
+
+export function toggleQModule(code: string): void {
+  set((s) => ({ qDraft: { ...s.qDraft, modules: toggleIn(s.qDraft.modules, code) } }));
+}
+
+export function setQStatus(status: string): void {
+  set((s) => ({ qDraft: { ...s.qDraft, status } }));
+}
+
+export function saveQuestionnaire(): void {
+  const d = get().qDraft;
+  appendAudit({
+    interactionId: `HV-${Date.now().toString(36)}`,
+    actor: `${get().accessKey} FNP/居護師`,
+    action: '家訪問卷暫存（E 表分流計畫）',
+    modelId: '—（人工填寫）',
+    hitlDecision: 'H4 人工主導',
+    sources: ['家訪問卷 家庭全人照護評估版'],
+    module: '家訪問卷',
+  });
+  const summary = [
+    d.triage.length ? `分流 ${d.triage.join('/')}` : '未標分流',
+    d.risk ? `風險 ${d.risk}` : '未定風險',
+    d.modules.length ? `模組 ${d.modules.join('/')}` : '未選模組',
+  ].join('｜');
+  showToast(`家訪問卷已暫存：${summary}`);
+}
+
 // ---- 名冊 / 篩選 ----
 export function setQuery(value: string): void {
   set({ query: value });
