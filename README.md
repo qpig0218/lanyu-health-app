@@ -1,14 +1,30 @@
 # Ayoi 蘭嶼健康行動 APP — Health Equity Command Center（HECC）原型
 
-可直接開啟的雙介面 Web App 原型，依《P11 IT/AI 系統委外規格與治理架構 v1.0》擴充，涵蓋五大 MVP 模組、八大 AI Agent 與資料／資安／AI 三軌治理外觀。維持 near-clear-glass 風格，純靜態可上 GitHub Pages。
+雙介面 Web App 原型，依《P11 IT/AI 系統委外規格與治理架構 v1.0》擴充，涵蓋五大 MVP 模組、八大 AI Agent 與資料／資安／AI 三軌治理外觀。以 **Vite + TypeScript** 模組化打造，純前端靜態輸出，部署於 GitHub Pages。
 
-## 啟動
+## 技術架構
+
+- **Vite 6 + TypeScript（strict）**：模組化前端，無框架；極簡 typed store + 整頁 render。
+- **安全模板**：自製 `html\`\`` tagged-template 自動逃逸內插值，事件以 `{ on: { click: fn } }` 委派，無 inline handler／`window.fn`（消滅 XSS 反模式）。
+- **i18n**：`t(key, vars?)` + zh/tao 字典；達悟語未審定條目誠實 fallback 中文並標「待審定」徽章。
+- **品質**：ESLint（含 `no-restricted-syntax` 擋 innerHTML）、Prettier、Vitest 單元測試（純邏輯 rbac/risk/consent/knowledge/i18n/html）。
+- **CI/CD**：GitHub Actions build → `actions/deploy-pages`，自訂網域 CNAME。
+
+## 開發
 
 ```bash
-python3 -m http.server 4173 --directory lanyu-health-app
+npm install
+npm run dev        # 本機開發伺服器
+npm run build      # tsc --noEmit && vite build → dist/
+npm run preview    # 預覽 production 建置
+npm run typecheck  # tsc --noEmit
+npm run lint       # eslint
+npm run test       # vitest（加 -- --run 跑單次）
 ```
 
-開啟 `http://localhost:4173`；GitHub Pages：`https://lanyu-health.theoneai.com.tw/`
+GitHub Pages：`https://lanyu-health.theoneai.com.tw/`
+
+> **部署設定**：在 GitHub 倉庫 **Settings → Pages → Build and deployment → Source** 選擇 **「GitHub Actions」**。push 到 `main` 後 `.github/workflows/deploy.yml` 會自動 typecheck/lint/test/build 並發佈 `dist/`（含 `CNAME`、`.nojekyll`、`manifest.json`、`assets/`）。
 
 ## 五級 RBAC 登入（對應 P11 附件 B）
 
