@@ -1,0 +1,103 @@
+import type { AgePackage } from './types.ts';
+
+/** 14 個年齡別健檢套餐（0 歲至 85+），依 trigger(age) 命中。 */
+export const agePackages: AgePackage[] = [
+  {
+    band: '0-未滿 1 歲',
+    trigger: (age) => age < 1,
+    core: ['生長曲線', '餵食與營養', '心肺腹理學', '髖關節', '神經發展', '聽力/視覺初篩', '口腔萌牙衛教', '疫苗盤點'],
+    labs: ['依風險加做貧血/鉛暴露'],
+    modules: ['兒童預防保健', '早療轉介'],
+  },
+  {
+    band: '1-2 歲',
+    trigger: (age) => age >= 1 && age <= 2,
+    core: ['身高體重與生長曲線', '發展里程碑', '視力/聽力觀察', '口腔與塗氟', '營養與睡眠', '居家安全', '疫苗盤點'],
+    labs: ['依貧血、鉛暴露、營養或發展風險加做'],
+    modules: ['幼兒預防保健', '早療/牙科轉介'],
+  },
+  {
+    band: '3-6 歲',
+    trigger: (age) => age >= 3 && age <= 6,
+    core: ['身高體重與生長曲線', '發展/語言/社會互動', '視力/聽力', '口腔與塗氟', '營養與睡眠', '安全與事故預防', '疫苗盤點'],
+    labs: ['依肥胖、貧血、鉛暴露、營養或家族史加做'],
+    modules: ['學齡前預防保健', '早療/牙科/視力轉介'],
+  },
+  {
+    band: '7-12 歲',
+    trigger: (age) => age >= 7 && age <= 12,
+    core: ['身高體重 BMI', '血壓', '視力/聽力', '口腔', '脊柱四肢', '尿液', '學習與睡眠'],
+    labs: ['肥胖或家族史加血脂/血糖'],
+    modules: ['學生健檢', '視力牙科追蹤'],
+  },
+  {
+    band: '13-18 歲',
+    trigger: (age) => age >= 13 && age <= 18,
+    core: ['BMI/血壓', '視力/聽力/口腔', '脊柱與運動傷害', '心理與睡眠', '菸酒檳榔/物質使用', '性健康與疫苗盤點'],
+    labs: ['肥胖、家族史、月經量多或症狀時加做 CBC/血糖/血脂'],
+    modules: ['青少年健康', '心理支持與校園轉介'],
+  },
+  {
+    band: '19-29 歲',
+    trigger: (age) => age >= 19 && age <= 29,
+    core: ['BMI/腰圍', '血壓', '視力口腔', '心理與睡眠', '疫苗盤點', '生殖健康', '菸酒檳榔'],
+    labs: ['抽血依肥胖、家族史、症狀或高風險加做'],
+    modules: ['青壯年輕量版', '健康行為支持'],
+  },
+  {
+    band: '30-39 歲',
+    trigger: (age) => age >= 30 && age <= 39,
+    core: ['成人預防保健', '血壓/BMI/腰圍', '血糖', '血脂', '肝腎功能', '尿液', '子宮頸抹片(女性)'],
+    labs: ['Glucose AC', 'Total-C', 'LDL', 'HDL', 'TG', 'ALT', 'Creatinine', 'Urine protein'],
+    modules: ['成人 A+ 版', '口腔黏膜(菸檳)'],
+  },
+  {
+    band: '40-44 歲',
+    trigger: (age) => age >= 40 && age <= 44,
+    core: ['成人預防保健', '血壓/BMI/腰圍', '血糖', '血脂', '肝腎功能', '尿液', 'B/C 肝終身一次', '子宮頸抹片(女性)'],
+    labs: ['Glucose AC', 'HbA1c', 'Lipid profile', 'ALT', 'Creatinine/eGFR', 'HBsAg', 'Anti-HCV', 'Urinalysis'],
+    modules: ['成人 A+ 版', '肝炎與代謝風險'],
+  },
+  {
+    band: '45-49 歲',
+    trigger: (age) => age >= 45 && age <= 49,
+    core: ['成人預防保健', 'FIT', '乳房攝影(女性)', '子宮頸抹片', '口腔癌風險篩檢', 'B/C 肝終身一次'],
+    labs: ['Glucose AC', 'HbA1c', 'Lipid profile', 'ALT', 'Creatinine', 'HBsAg', 'Anti-HCV'],
+    modules: ['成人 A+ 版', '癌篩與肺健康'],
+  },
+  {
+    band: '50-54 歲',
+    trigger: (age) => age >= 50 && age <= 54,
+    core: ['成人預防保健', 'FIT', '乳房攝影(女性)', '子宮頸抹片', '口腔癌風險篩檢', '慢病風險盤點', 'LDCT 條件初篩'],
+    labs: ['CBC', 'Glucose AC', 'HbA1c', 'Lipid profile', 'ALT', 'Creatinine/eGFR', 'Uric acid', 'Urinalysis'],
+    modules: ['成人 B 版', '癌篩與慢病預防'],
+  },
+  {
+    band: '55-64 歲',
+    trigger: (age) => age >= 55 && age <= 64,
+    core: ['原住民每年成人預防保健', '癌篩依條件', '慢病控制', '腎病/心血管風險', '聽力視力口腔', '簡版高齡功能'],
+    labs: ['CBC', 'Glucose AC', 'HbA1c', 'Lipid profile', 'ALT', 'Creatinine/eGFR', 'Uric acid', 'TSH', 'HBsAg', 'Anti-HCV', 'Urinalysis'],
+    modules: ['成人 B 版', 'LDCT 高風險分流', '慢病穩定'],
+  },
+  {
+    band: '65-74 歲',
+    trigger: (age) => age >= 65 && age <= 74,
+    core: ['每年成人預防保健', 'FIT/乳攝/LDCT 依條件', 'ICOPE 六力', '跌倒風險', '用藥整合', '骨質疏鬆(女性)'],
+    labs: ['CBC', 'Glucose AC', 'HbA1c', 'Lipid profile', 'ALT', 'Creatinine/eGFR', 'Urinalysis', 'TSH'],
+    modules: ['高齡整合版', '長照/復能', '居家安全'],
+  },
+  {
+    band: '75-84 歲',
+    trigger: (age) => age >= 75 && age <= 84,
+    core: ['成人預防保健個別化', 'ICOPE 六力', 'ADL/IADL', '跌倒風險', '營養/吞嚥', '用藥整合', '認知與憂鬱', '照顧者負荷'],
+    labs: ['CBC', 'Glucose AC/HbA1c', 'Creatinine/eGFR', 'Electrolytes', 'Urinalysis', 'TSH 依症狀或用藥'],
+    modules: ['高齡整合版', '長照/復能', '照顧者支持'],
+  },
+  {
+    band: '85 歲以上',
+    trigger: (age) => age >= 85,
+    core: ['ADL/IADL', '跌倒', '失智/譫妄', '憂鬱', '營養吞嚥', '口腔', '疼痛', '用藥減量', '照顧負荷'],
+    labs: ['症狀導向檢查', '用藥安全必要項目'],
+    modules: ['高齡整合版', '照顧者支持', '預立醫療照護諮商'],
+  },
+];
