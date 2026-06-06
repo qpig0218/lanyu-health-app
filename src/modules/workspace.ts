@@ -3,7 +3,7 @@ import { icon, type IconName } from '../lib/icon.ts';
 import { getState } from '../state/store.ts';
 import type { Patient, AgePackage } from '../data/types.ts';
 import { patients } from '../data/patients.ts';
-import { agePackages } from '../data/age-packages.ts';
+import { agePackages, ldctAddOnPackage } from '../data/age-packages.ts';
 import { villageNames } from '../data/villages.ts';
 import { piiFields, questionnaireSections } from '../data/household.ts';
 import { packageForAge, friendlyHouseholdTag, aiSignalsFor, smartPlanFor } from '../domain/risk.ts';
@@ -487,6 +487,32 @@ function renderAiCheckupCoach(patient: Patient, pkg: AgePackage): SafeHtml {
   `;
 }
 
+function renderLdctAddOnPanel(patient: Patient): SafeHtml {
+  const signalText = `${patient.tags.join(' ')} ${patient.conditions.join(' ')} ${patient.questionnaire.alert}`;
+  const candidate = patient.age >= 50 || signalText.includes('LDCT') || signalText.includes('吸菸') || signalText.includes('肺');
+  return html`
+    <div class="check-block wide ldct-addon-panel">
+      <div class="ldct-addon-head">
+        <div>
+          <span class="ai-kicker">LDCT 加做包</span>
+          <h3>${ldctAddOnPackage.band}</h3>
+        </div>
+        <span class="status-pill ${candidate ? 'yellow' : ''}">${candidate ? '需條件確認' : '依風險分流'}</span>
+      </div>
+      <div class="section-grid compact-grid">
+        <div>
+          <h3>條件確認</h3>
+          <div class="check-list">${ldctAddOnPackage.core.map((item) => checkItem(item, '確認'))}</div>
+        </div>
+        <div>
+          <h3>影像與追蹤</h3>
+          <div class="check-list">${ldctAddOnPackage.labs.map((item) => checkItem(item, '排程'))}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function renderCheckup(patient: Patient): SafeHtml {
   const pkg = packageForAge(patient.age);
   return html`
@@ -503,8 +529,9 @@ function renderCheckup(patient: Patient): SafeHtml {
       </div>
       <div class="info-block">
         <h3>分齡原則</h3>
-        <p class="minor">0-6 歲依兒童預防保健與發展風險分層；7-18 歲以學齡/青少年健康為主；30 歲以上接成人預防保健；55 歲以上原住民每年評估；75 歲以上癌篩與抽血項目個別化。</p>
+        <p class="minor">未滿 7 歲不列主檢包；7-18 歲採兒少 S 版；19-49 歲成人 A 版；50-64 歲成人 B 版；65+ 採高齡 G 版。LDCT 不設年齡層，依政策或高風險條件加做。</p>
       </div>
+      ${renderLdctAddOnPanel(patient)}
       <div class="check-block">
         <h3>核心檢查</h3>
         <div class="check-list">${pkg.core.map((item) => checkItem(item, '安排'))}</div>

@@ -269,7 +269,7 @@
 .perm-lock .icon { width: 28px; height: 28px; }
 
 /* ---- 登入 RBAC 卡 ---- */
-.rbac-login-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.rbac-login-grid { grid-template-columns: minmax(0, 1fr); }
 .rbac-login-card .login-role-icon { background: transparent; }
 
 /* ---- 民眾端同意卡 ---- */

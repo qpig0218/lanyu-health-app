@@ -10,6 +10,15 @@ export interface SmartPlan {
 
 /** 年齡別健檢方案；年齡異常時回退「需人工確認」佔位方案。 */
 export function packageForAge(age: number): AgePackage {
+  if (!Number.isFinite(age) || age < 0) {
+    return {
+      band: '需人工確認',
+      trigger: () => false,
+      core: ['年齡資料異常，請先確認生日或戶籍資料'],
+      labs: ['暫不自動排檢'],
+      modules: ['資料品質檢核'],
+    };
+  }
   return (
     agePackages.find((item) => item.trigger(age)) ?? {
       band: '需人工確認',

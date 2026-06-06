@@ -27,23 +27,28 @@ function makePatient(overrides: Partial<Patient>): Patient {
 }
 
 describe('packageForAge 年齡邊界', () => {
-  it('0 歲 → 0-未滿 1 歲', () => {
-    expect(packageForAge(0).band).toBe('0-未滿 1 歲');
+  it('未滿 7 歲 → 不列主檢包', () => {
+    expect(packageForAge(0).band).toBe('未滿 7 歲：不列主檢包');
+    expect(packageForAge(6).band).toBe('未滿 7 歲：不列主檢包');
   });
-  it('1 歲 → 1-2 歲', () => {
-    expect(packageForAge(1).band).toBe('1-2 歲');
+  it('7-18 歲 → 兒少 S 版', () => {
+    expect(packageForAge(7).band).toBe('7-18 歲：兒少 S 版');
+    expect(packageForAge(18).band).toBe('7-18 歲：兒少 S 版');
   });
-  it('18 歲 → 13-18 歲', () => {
-    expect(packageForAge(18).band).toBe('13-18 歲');
+  it('19-49 歲 → 成人 A 版', () => {
+    expect(packageForAge(19).band).toBe('19-49 歲：成人 A 版');
+    expect(packageForAge(49).band).toBe('19-49 歲：成人 A 版');
   });
-  it('65 歲 → 65-74 歲', () => {
-    expect(packageForAge(65).band).toBe('65-74 歲');
+  it('50-64 歲 → 成人 B 版', () => {
+    expect(packageForAge(50).band).toBe('50-64 歲：成人 B 版');
+    expect(packageForAge(64).band).toBe('50-64 歲：成人 B 版');
   });
-  it('85 歲以上', () => {
-    expect(packageForAge(90).band).toBe('85 歲以上');
+  it('65 歲以上 → 高齡 G 版', () => {
+    expect(packageForAge(65).band).toBe('65+：高齡 G 版');
+    expect(packageForAge(90).band).toBe('65+：高齡 G 版');
   });
   it('負數年齡 → 需人工確認', () => {
-    expect(packageForAge(-5).band).toBe('0-未滿 1 歲'); // age < 1 命中第一段
+    expect(packageForAge(-5).band).toBe('需人工確認');
     expect(packageForAge(NaN).band).toBe('需人工確認');
   });
 });

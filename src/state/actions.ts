@@ -3,6 +3,7 @@ import type { State } from './state.ts';
 import { patients } from '../data/patients.ts';
 import { agePackages } from '../data/age-packages.ts';
 import { accessLevels } from '../data/access-levels.ts';
+import { saveSiteDraftsToStorage, siteForms, type SiteDrafts } from '../data/site-forms.ts';
 import { packageForAge, moduleByCode } from '../domain/risk.ts';
 import { currentLevel } from '../domain/rbac.ts';
 import { buildAiDraft } from '../domain/ai-draft.ts';
@@ -18,6 +19,14 @@ const set = (patch: Partial<State> | ((state: Readonly<State>) => Partial<State>
 const get = (): Readonly<State> => store.get();
 
 let toastTimer: ReturnType<typeof setTimeout> | null = null;
+
+function localStorageOrUndefined(): Storage | undefined {
+  return typeof window === 'undefined' ? undefined : window.localStorage;
+}
+
+function persistSiteDrafts(drafts: SiteDrafts): void {
+  saveSiteDraftsToStorage(localStorageOrUndefined(), drafts);
+}
 
 /** 顯示 toast 提示，1.8 秒後自動清除。 */
 export function showToast(message: string): void {
@@ -85,6 +94,7 @@ export function loginWithAccess(): void {
     role: lv.role,
     loginRole: lv.role,
     clinicalNav: lv.role === 'clinical' ? lv.nav : s.clinicalNav,
+    clinicalNavOpen: false,
     dashboardView,
     aiDraft: null,
   }));
@@ -93,7 +103,15 @@ export function loginWithAccess(): void {
 
 // ---- 醫護端導覽 ----
 export function setClinicalNav(nav: string): void {
-  set({ clinicalNav: nav, aiDraft: null });
+  set({ clinicalNav: nav, clinicalNavOpen: false, aiDraft: null });
+}
+
+export function toggleClinicalNavDrawer(): void {
+  set((s) => ({ clinicalNavOpen: !s.clinicalNavOpen }));
+}
+
+export function closeClinicalNavDrawer(): void {
+  set({ clinicalNavOpen: false });
 }
 
 export function setTab(tab: string): void {
@@ -194,6 +212,56 @@ export function saveQuestionnaire(): void {
     d.modules.length ? `模組 ${d.modules.join('/')}` : '未選模組',
   ].join('｜');
   showToast(`家訪問卷已暫存：${summary}`);
+}
+
+// ---- 6/9 現場模式 ----
+export function setSiteForm(formId: string): void {
+  if (!siteForms.some((form) => form.id === formId)) return;
+  set({ siteFormId: formId });
+}
+
+export function updateSiteField(formId: string, fieldId: string, value: string): void {
+  set((s) => {
+    const nextDrafts: SiteDrafts = {
+      ...s.siteDrafts,
+      [formId]: {
+        ...(s.siteDrafts[formId] ?? {}),
+        [fieldId]: value,
+      },
+    };
+    persistSiteDrafts(nextDrafts);
+    return { siteDrafts: nextDrafts };
+  });
+}
+
+function selectedOptions(value: string): string[] {
+  return value
+    .split('、')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+export function toggleSiteFieldOption(formId: string, fieldId: string, option: string): void {
+  const current = get().siteDrafts[formId]?.[fieldId] ?? '';
+  const options = selectedOptions(current);
+  const next = options.includes(option)
+    ? options.filter((item) => item !== option)
+    : [...options, option];
+  updateSiteField(formId, fieldId, next.join('、'));
+}
+
+export function saveSiteModeDraft(): void {
+  persistSiteDrafts(get().siteDrafts);
+  appendAudit({
+    interactionId: `SITE-${Date.now().toString(36)}`,
+    actor: `${get().accessKey} 現場工作人員`,
+    action: '6/9 現場模式離線暫存',
+    modelId: '—（人工填寫）',
+    hitlDecision: 'H4 人工主導',
+    sources: ['2026-06-09_蘭嶼場勘包_四單位一頁式填答表'],
+    module: '現場模式',
+  });
+  showToast('現場模式已離線暫存');
 }
 
 // ---- 名冊 / 篩選 ----
