@@ -479,3 +479,255 @@ button[aria-disabled='true'] {
     justify-items: start;
   }
 }
+
+/* ---- Readable glass clarity layer ---- */
+:root {
+  --page-background-wash: linear-gradient(
+    180deg,
+    rgba(250, 254, 254, 0.82) 0%,
+    rgba(239, 249, 249, 0.76) 48%,
+    rgba(225, 242, 244, 0.86) 100%
+  );
+  --glass-atmosphere-bg: rgba(247, 253, 253, 0.74);
+  --glass-atmosphere-bg-strong: rgba(250, 255, 255, 0.88);
+  --glass-readable-bg: rgba(248, 253, 253, 0.92);
+  --glass-readable-bg-strong: rgba(253, 255, 255, 0.97);
+  --glass-readable-line: rgba(29, 74, 96, 0.24);
+  --glass-readable-line-soft: rgba(29, 74, 96, 0.14);
+  --glass-readable-shadow: 0 18px 44px rgba(16, 46, 67, 0.10), 0 1px 0 rgba(255, 255, 255, 0.78) inset;
+  --glass-readable-shadow-soft: 0 10px 24px rgba(16, 46, 67, 0.08), 0 1px 0 rgba(255, 255, 255, 0.74) inset;
+  --glass-readable-blur: blur(10px) saturate(124%);
+  --glass-readable-blur-soft: blur(7px) saturate(116%);
+}
+
+body {
+  color: var(--basalt);
+  background:
+    var(--page-background-wash),
+    url("/assets/lanyu_app_background_desktop_16x9_less_white.png") center center / cover fixed no-repeat,
+    #e8f5f4;
+}
+
+body::before {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.08) 46%, rgba(255, 255, 255, 0.22)),
+    linear-gradient(180deg, rgba(245, 252, 252, 0.52), rgba(245, 252, 252, 0.18));
+  -webkit-mask-image: none;
+  mask-image: none;
+  mix-blend-mode: normal;
+  opacity: 0.74;
+}
+
+body::after {
+  height: 28vh;
+  background: linear-gradient(180deg, transparent, rgba(222, 241, 243, 0.58));
+  filter: none;
+  opacity: 0.42;
+}
+
+.landing-app {
+  isolation: isolate;
+}
+
+.landing-app::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.46), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(233, 248, 250, 0.44));
+}
+
+.landing-app .landing-shell {
+  position: relative;
+  z-index: 1;
+}
+
+.landing-app .login-panel {
+  color: var(--basalt);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(240, 250, 251, 0.34)),
+    var(--glass-atmosphere-bg);
+  border-color: var(--glass-readable-line);
+  box-shadow: var(--glass-readable-shadow);
+  -webkit-backdrop-filter: var(--glass-readable-blur);
+  backdrop-filter: var(--glass-readable-blur);
+}
+
+.landing-app .login-panel::before {
+  background:
+    linear-gradient(132deg, rgba(255, 255, 255, 0.42), transparent 58%),
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.40), transparent 32%);
+  border-color: var(--glass-readable-line-soft);
+  opacity: 0.28;
+}
+
+.landing-app :is(.login-role-card, .login-form-mock input) {
+  color: var(--basalt);
+  background: var(--glass-atmosphere-bg-strong);
+  border-color: var(--glass-readable-line-soft);
+  box-shadow: var(--glass-readable-shadow-soft);
+  -webkit-backdrop-filter: var(--glass-readable-blur-soft);
+  backdrop-filter: var(--glass-readable-blur-soft);
+}
+
+.landing-app .login-role-card.active {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(228, 248, 251, 0.58)),
+    var(--glass-readable-bg);
+  border-color: rgba(18, 118, 174, 0.46);
+}
+
+.landing-app .login-form-mock input {
+  background: var(--glass-readable-bg-strong);
+  border: 1px solid var(--glass-readable-line);
+}
+
+.clinical-app :is(
+  .dashboard-hero,
+  .clinical-command,
+  .panel,
+  .stat,
+  .record,
+  .queue,
+  .right-panel,
+  .visual-panel,
+  .info-block,
+  .check-block,
+  .field-block,
+  .schema-card,
+  .patient-card,
+  .task-card,
+  .action-item,
+  .ai-draft,
+  .fill-task,
+  .timeline-item,
+  .dimension-chip,
+  .resident-module,
+  [class*="card"],
+  .module-stage-head,
+  .permission-wall,
+  .site-form-head,
+  .site-card,
+  .site-save-bar,
+  .site-form-nav button,
+  .site-review-unit
+) {
+  color: var(--basalt);
+  background: var(--glass-readable-bg);
+  border-color: var(--glass-readable-line);
+  box-shadow: var(--glass-readable-shadow-soft);
+  -webkit-backdrop-filter: var(--glass-readable-blur-soft);
+  backdrop-filter: var(--glass-readable-blur-soft);
+}
+
+.clinical-app :is(
+  .dashboard-hero,
+  .clinical-command,
+  .panel,
+  .stat,
+  .record,
+  .queue,
+  .right-panel,
+  .visual-panel,
+  .info-block,
+  .check-block,
+  .field-block,
+  .schema-card,
+  .patient-card,
+  .task-card,
+  .action-item,
+  .site-card
+)::before {
+  background:
+    linear-gradient(125deg, rgba(255, 255, 255, 0.22), transparent 44%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 68%);
+  border-color: var(--glass-readable-line-soft);
+  opacity: 0.10;
+}
+
+.clinical-app :is(
+  .dashboard-hero,
+  .clinical-command,
+  .panel,
+  .stat,
+  .record,
+  .queue,
+  .visual-panel
+)::after {
+  opacity: 0.06;
+}
+
+.resident-app :is(
+  .phone,
+  .resident-web-nav,
+  .resident-card,
+  .family-card,
+  .task-card,
+  .info-block,
+  .check-block,
+  .field-block,
+  .timeline-item,
+  .dimension-chip,
+  .resident-module,
+  .path-step,
+  .member-pill,
+  .family-design-panel,
+  .family-design-metrics span,
+  .resident-ai-list div,
+  .resident-smart-goal,
+  [class*="card"]
+) {
+  color: var(--basalt);
+  background: rgba(248, 253, 253, 0.88);
+  border-color: var(--glass-readable-line);
+  box-shadow: var(--glass-readable-shadow-soft);
+  -webkit-backdrop-filter: var(--glass-readable-blur-soft);
+  backdrop-filter: var(--glass-readable-blur-soft);
+}
+
+.clinical-app :is(input, select, textarea, .lab-input) {
+  color: var(--basalt);
+  background: var(--glass-readable-bg-strong);
+  border: 1px solid var(--glass-readable-line);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.76);
+}
+
+.clinical-app :is(.site-field input, .site-field textarea, .searchbox input, .field input, .field select, .field textarea) {
+  background: var(--glass-readable-bg-strong);
+  border-color: var(--glass-readable-line);
+}
+
+.clinical-app :is(.site-choice, .q-choice, .choice, .q-choice-btn, .q-module) {
+  color: var(--basalt);
+  background: rgba(253, 255, 255, 0.86);
+  border-color: var(--glass-readable-line-soft);
+}
+
+.clinical-app :is(.minor, .panel-note, .site-field label, .site-form-head p, .site-save-bar span, .site-review-list dt) {
+  color: rgba(31, 42, 48, 0.72);
+}
+
+.clinical-app :is(.topbar, .gov-bar, .clinical-nav-trigger, .clinical-side-nav.clinical-primary-rail),
+.resident-app :is(.topbar, .resident-web-nav) {
+  background: var(--glass-readable-bg-strong);
+  border-color: var(--glass-readable-line);
+  box-shadow: var(--glass-readable-shadow-soft);
+}
+
+@media (max-width: 860px) {
+  body {
+    background:
+      var(--page-background-wash),
+      url("/assets/lanyu_app_background_mobile_9x16_less_white.png") center center / cover scroll no-repeat,
+      #e8f5f4;
+  }
+
+  .landing-app .login-panel {
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(240, 250, 251, 0.48)),
+      rgba(247, 253, 253, 0.82);
+  }
+}
