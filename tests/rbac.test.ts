@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { accessLevels } from '../src/data/access-levels.ts';
 import { hasGov, visibleKbLayers, canViewLayer, currentLevel } from '../src/domain/rbac.ts';
 
 describe('rbac', () => {
@@ -20,6 +21,10 @@ describe('rbac', () => {
 
   it('L2 PMO 可見全部三層', () => {
     expect(visibleKbLayers('L2')).toEqual(['K1', 'K2', 'K3']);
+  });
+
+  it('L2 顯示為 PMO / 部桃', () => {
+    expect(accessLevels.find((level) => level.key === 'L2')?.name).toBe('PMO / 部桃');
   });
 
   it('currentLevel 找不到時回退 L4', () => {
